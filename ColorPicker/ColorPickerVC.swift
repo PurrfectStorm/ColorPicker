@@ -57,12 +57,15 @@ class ColorPickerVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let url = Bundle.main.url(forResource: "test", withExtension: "jpg")!
-        let image = resizedImage(at: url, for: self.mainImage.bounds.size)
+//        let scaleFactor = UIScreen.main.scale
+//        let scale = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+        let image = resizedImage(at: url, for: mainImage.bounds.size)
         self.mainImage.image = image
     }
     
     @objc func pointTapped(_ sender:UITapGestureRecognizer) {
-        let color = mainImage.getPixelColor(pos: sender.location(in: mainImage))
+        let color = mainImage.image!.getPixelColor(pos: sender.location(in: mainImage))
+        print("Tapped at \(sender.location(in: view))")
         colorPreview.backgroundColor = color
         colorDescription.text = colorToHex(color: color)
     }
@@ -99,14 +102,14 @@ class ColorPickerVC: UIViewController {
     }
 }
 
-extension UIImageView {
+extension UIImage {
     func getPixelColor(pos: CGPoint) -> UIColor {
 
-        let pixelData = self.image!.cgImage!.dataProvider!.data
+        let pixelData = self.cgImage!.dataProvider!.data
         let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
 
-        let pixelInfo: Int = ((Int(self.image!.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-
+        let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
+        print("pixelInfo: \(pixelInfo), data: \(data[pixelInfo]), image height: \(self.size.height), image width: \(self.size.width)")
         let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
         let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
         let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
