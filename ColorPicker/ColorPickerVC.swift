@@ -1,0 +1,118 @@
+//
+//  ColorPickerVC.swift
+//  ColorPicker
+//
+//  Created by Holy Light on 16.12.2021.
+//
+
+import UIKit
+
+class ColorPickerVC: UIViewController {
+    
+    var mainImage: UIImageView!
+    var colorPreview: UIView!
+    var colorDescription: UILabel!
+    
+    override func loadView() {
+        view = UIView()
+        mainImage = UIImageView()
+        //mainImage.image = UIImage(named: "test.jpg")
+        mainImage.translatesAutoresizingMaskIntoConstraints = false
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (pointTapped(_:))))
+        view.addSubview(mainImage)
+        
+        colorPreview = UIView(frame: CGRect(x: view.center.x + 80 , y: view.center.y + 700 , width: 50, height: 50))
+        colorPreview.backgroundColor = .red
+        colorDescription = UILabel()
+        colorDescription.font = UIFont.systemFont(ofSize: 15)
+        colorDescription.textAlignment = .center
+        colorDescription.textColor = .systemBlue
+        colorDescription.text = "HEX CODE"
+        colorDescription.translatesAutoresizingMaskIntoConstraints = false
+        colorPreview.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(colorPreview)
+        view.addSubview(colorDescription)
+        
+        NSLayoutConstraint.activate([
+            
+            mainImage.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            mainImage.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            mainImage.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
+            mainImage.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -200),
+            
+            colorDescription.topAnchor.constraint(equalTo: mainImage.bottomAnchor, constant: 60),
+            colorDescription.widthAnchor.constraint(equalTo: mainImage.widthAnchor, multiplier: 0.5, constant: -50),
+            colorDescription.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor, constant: -20),
+            
+        ])
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mainImage.setNeedsDisplay()
+        // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        let url = Bundle.main.url(forResource: "test", withExtension: "jpg")!
+        let image = resizedImage(at: url, for: self.mainImage.bounds.size)
+        self.mainImage.image = image
+    }
+    
+    @objc func pointTapped(_ sender:UITapGestureRecognizer) {
+        let color = mainImage.getPixelColor(pos: sender.location(in: mainImage))
+        colorPreview.backgroundColor = color
+        colorDescription.text = colorToHex(color: color)
+    }
+    
+    func resizedImage(at url:URL, for size: CGSize) -> UIImage? {
+        guard let image  = UIImage(contentsOfFile: url.path) else {
+            return nil
+        }
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { (context) in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+    
+    func colorToHex(color: UIColor, alpha: Bool = false) -> String? {
+        guard let components = color.cgColor.components, components.count >= 3 else {
+            return nil
+        }
+        let r = Float(components[0])
+        let g = Float(components[1])
+        let b = Float(components[2])
+        var a = Float(1.0)
+        
+        if components.count >= 4 {
+            a = Float(components[3])
+        }
+        
+        if alpha {
+            return String(format: "%02lX%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255), lroundf(a * 255))
+        } else {
+            return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
+        }
+        
+    }
+}
+
+extension UIImageView {
+    func getPixelColor(pos: CGPoint) -> UIColor {
+
+        let pixelData = self.image!.cgImage!.dataProvider!.data
+        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+
+        let pixelInfo: Int = ((Int(self.image!.size.width) * Int(pos.y)) + Int(pos.x)) * 4
+
+        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
+        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
+        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
+        let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
+
+        return UIColor(red: r, green: g, blue: b, alpha: a)
+    }
+
+}
