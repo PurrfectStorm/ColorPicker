@@ -22,15 +22,16 @@ class ColorPickerVC: UIViewController {
         view.addSubview(mainImage)
         
         colorPreview = UIView(frame: CGRect(x: view.center.x + 80 , y: view.center.y + 700 , width: 50, height: 50))
-        colorPreview.backgroundColor = .red
+        colorPreview.backgroundColor = .clear
         colorDescription = UILabel()
+        colorDescription.isUserInteractionEnabled = false
         colorDescription.font = UIFont.systemFont(ofSize: 15)
         colorDescription.textAlignment = .center
         colorDescription.textColor = .systemBlue
         colorDescription.text = "HEX CODE"
         colorDescription.translatesAutoresizingMaskIntoConstraints = false
         colorPreview.translatesAutoresizingMaskIntoConstraints = false
-
+        
         view.addSubview(colorPreview)
         view.addSubview(colorDescription)
         
@@ -47,7 +48,7 @@ class ColorPickerVC: UIViewController {
             
         ])
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         mainImage.setNeedsDisplay()
@@ -56,9 +57,9 @@ class ColorPickerVC: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let url = Bundle.main.url(forResource: "test", withExtension: "jpg")!
-//        let scaleFactor = UIScreen.main.scale
-//        let scale = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
+        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
+        //        let scaleFactor = UIScreen.main.scale
+        //        let scale = CGAffineTransform(scaleX: scaleFactor, y: scaleFactor)
         let image = resizedImage(at: url, for: mainImage.bounds.size)
         self.mainImage.image = image
     }
@@ -80,42 +81,56 @@ class ColorPickerVC: UIViewController {
         }
     }
     
-    func colorToHex(color: UIColor, alpha: Bool = false) -> String? {
+    func colorToHex(color: UIColor) -> String? {
         guard let components = color.cgColor.components, components.count >= 3 else {
             return nil
         }
         let r = Float(components[0])
         let g = Float(components[1])
         let b = Float(components[2])
-        var a = Float(1.0)
+        ////        var a = Float(1.0)
+        //
+        //        if components.count >= 4 {
+        //            a = Float(components[3])
+        //        }
         
-        if components.count >= 4 {
-            a = Float(components[3])
-        }
-        
-        if alpha {
-            return String(format: "%02lX%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255), lroundf(a * 255))
-        } else {
-            return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
-        }
+        //        if alpha {
+        //            return String(format: "%02lX%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255), lroundf(a * 255))
+        //        } else {
+        return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
+        //        }
         
     }
 }
 
 extension UIImage {
     func getPixelColor(pos: CGPoint) -> UIColor {
-
-        let pixelData = self.cgImage!.dataProvider!.data
-        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-
-        let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-        print("pixelInfo: \(pixelInfo), data: \(data[pixelInfo]), image height: \(self.size.height), image width: \(self.size.width)")
-        let r = CGFloat(data[pixelInfo]) / CGFloat(255.0)
-        let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
-        let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
-        let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
-
+        
+        //        let pixelData = self.cgImage!.dataProvider!.data
+        //        let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+        
+        let size = self.size
+        let dataSize = size.width * size.height * 4
+        var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let context = CGContext(data: &pixelData,
+                                width: Int(size.width),
+                                height: Int(size.height),
+                                bitsPerComponent: 8,
+                                bytesPerRow: 4 * Int(size.width),
+                                space: colorSpace,
+                                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
+        guard let cgImage = self.cgImage else { return .clear }
+        context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        
+        let pixelInfo: Int = ((Int(size.width) * Int(pos.y)) + Int(pos.x)) * 4
+        //        print("pixelInfo: \(pixelInfo), data: \(data[pixelInfo]), image height: \(self.size.height), image width: \(self.size.width)")
+        let r = CGFloat(pixelData[pixelInfo]) / CGFloat(255.0)
+        let g = CGFloat(pixelData[pixelInfo+1]) / CGFloat(255.0)
+        let b = CGFloat(pixelData[pixelInfo+2]) / CGFloat(255.0)
+        let a = CGFloat(pixelData[pixelInfo+3]) / CGFloat(255.0)
+        
         return UIColor(red: r, green: g, blue: b, alpha: a)
     }
-
+    
 }
