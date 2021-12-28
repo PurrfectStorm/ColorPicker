@@ -13,6 +13,7 @@
 		EC08E702276BD9E1007E32D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC08E700276BD9E1007E32D4 /* Main.storyboard */; };
 		EC08E704276BD9E2007E32D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC08E703276BD9E2007E32D4 /* Assets.xcassets */; };
 		EC08E707276BD9E2007E32D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC08E705276BD9E2007E32D4 /* LaunchScreen.storyboard */; };
+		EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC569BF4277B9B5600874753 /*  ImageProvider.swift */; };
 		EC81E8FD2774A76300388BED /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EC81E8FC2774A76300388BED /* test.jpg */; };
 		EC9B3F542774A06D007B1E73 /* colors.png in Resources */ = {isa = PBXBuildFile; fileRef = EC9B3F532774A06D007B1E73 /* colors.png */; };
 /* End PBXBuildFile section */
@@ -26,6 +27,7 @@
 		EC08E703276BD9E2007E32D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC08E706276BD9E2007E32D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EC08E708276BD9E2007E32D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EC569BF4277B9B5600874753 /*  ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " ImageProvider.swift"; sourceTree = "<group>"; };
 		EC81E8FC2774A76300388BED /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
 		EC9B3F532774A06D007B1E73 /* colors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = colors.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -63,6 +65,7 @@
 				EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */,
 				EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */,
 				EC08E6FE276BD9E1007E32D4 /* ColorPickerVC.swift */,
+				EC569BF4277B9B5600874753 /*  ImageProvider.swift */,
 				EC08E700276BD9E1007E32D4 /* Main.storyboard */,
 				EC08E703276BD9E2007E32D4 /* Assets.xcassets */,
 				EC08E705276BD9E2007E32D4 /* LaunchScreen.storyboard */,
@@ -147,6 +150,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC08E6FF276BD9E1007E32D4 /* ColorPickerVC.swift in Sources */,
+				EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */,
 				EC08E6FB276BD9E1007E32D4 /* AppDelegate.swift in Sources */,
 				EC08E6FD276BD9E1007E32D4 /* SceneDelegate.swift in Sources */,
 			);

@@ -9,17 +9,29 @@ import UIKit
 
 class ColorPickerVC: UIViewController {
     
+    var provider = ImageProvider()
+    
     var mainImage: UIImageView!
     var colorPreview: UIView!
     var colorDescription: UILabel!
+    var importButton: UIButton!
     
     override func loadView() {
         
         view = UIView()
+        view.backgroundColor = .white
+        importButton = UIButton()
+        importButton.translatesAutoresizingMaskIntoConstraints = false
+        importButton.setTitle("+", for: .normal)
+        importButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50))
+        importButton.backgroundColor = .gray
+        importButton.isUserInteractionEnabled = true
+        importButton.addTarget(self, action: #selector(importButtonTapped), for: .touchUpInside)
         mainImage = UIImageView()
         mainImage.translatesAutoresizingMaskIntoConstraints = false
         mainImage.isUserInteractionEnabled = true
         view.addSubview(mainImage)
+        view.addSubview(importButton)
         
         colorPreview = UIView(frame: CGRect(x: view.center.x + 80 , y: view.center.y + 700 , width: 50, height: 50))
         colorPreview.backgroundColor = .clear
@@ -46,6 +58,9 @@ class ColorPickerVC: UIViewController {
             colorDescription.widthAnchor.constraint(equalTo: mainImage.widthAnchor, multiplier: 0.5, constant: -50),
             colorDescription.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor, constant: -20),
             
+            importButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            importButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 350)
+            
         ])
     }
     
@@ -56,9 +71,9 @@ class ColorPickerVC: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
-        let image = resizedImage(at: url, for: mainImage.bounds.size)
-        self.mainImage.image = image
+//        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
+//        let image = resizedImage(at: url, for: mainImage.bounds.size)
+//        self.mainImage.image = image
     }
     
     @objc func pointTapped(_ sender:UITapGestureRecognizer) {
@@ -66,6 +81,13 @@ class ColorPickerVC: UIViewController {
         print("Tapped at \(sender.location(in: view))")
         colorPreview.backgroundColor = color
         colorDescription.text = colorToHex(color: color)
+    }
+    
+    @objc func importButtonTapped(_ sender: UIButton) {
+        print("button tapped, image \(mainImage.image)")
+        mainImage.image = provider.makeImage(in: .clipboard)
+        
+        view.setNeedsDisplay()
     }
     
     func resizedImage(at url:URL, for size: CGSize) -> UIImage? {
