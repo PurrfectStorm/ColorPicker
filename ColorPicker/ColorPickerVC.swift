@@ -72,8 +72,8 @@ class ColorPickerVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 //        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
-//        let image = resizedImage(at: url, for: mainImage.bounds.size)
-//        self.mainImage.image = image
+        let image = resizeImage(image: provider.outputImage, for: mainImage.bounds.size)
+        self.mainImage.image = image
     }
     
     @objc func pointTapped(_ sender:UITapGestureRecognizer) {
@@ -84,22 +84,24 @@ class ColorPickerVC: UIViewController {
     }
     
     @objc func importButtonTapped(_ sender: UIButton) {
-        print("button tapped, image \(mainImage.image)")
-        mainImage.image = provider.makeImage(in: .clipboard)
+        provider.makeImage(in: .clipboard)
+        mainImage.image = provider.outputImage
         
         view.setNeedsDisplay()
     }
     
-    func resizedImage(at url:URL, for size: CGSize) -> UIImage? {
-        guard let image  = UIImage(contentsOfFile: url.path) else {
+    func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        if let safeImage = image {
+            return renderer.image { (context) in
+                safeImage.draw(in: CGRect(origin: .zero, size: size))
+            }
+        }
+        else {
             return nil
         }
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { (context) in
-            image.draw(in: CGRect(origin: .zero, size: size))
-        }
     }
-    
+
     func colorToHex(color: UIColor) -> String? {
         guard let components = color.cgColor.components, components.count >= 3 else {
             return nil

@@ -17,23 +17,16 @@ enum ImageCreatingMode {
 struct ImageProvider {
     var outputImage: UIImage?
     
-    func makeImage(in mode:ImageCreatingMode) -> UIImage? {
+    mutating func makeImage(in mode:ImageCreatingMode) {
         switch mode {
         case .clipboard:
-            let board = UIPasteboard()
-            if board.hasImages {
-                print ("got an image")
-                return board.image
-            } else {
-                print ("no image for you")
-                return nil
-            }
-        case .url(let url):
-            return nil
+            outputImage = UIPasteboard.general.image
+        case .url( _):
+            return
         case .camera:
-            return nil
+            return
         case .gallery:
-            return nil
+            return 
         }
     }
     
