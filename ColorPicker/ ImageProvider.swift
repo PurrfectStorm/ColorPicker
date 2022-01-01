@@ -9,7 +9,6 @@ import UIKit
 
 enum ImageCreatingMode {
     case clipboard
-    case url (url: String)
     case camera
     case gallery
 }
@@ -20,13 +19,18 @@ struct ImageProvider {
     mutating func makeImage(in mode:ImageCreatingMode) {
         switch mode {
         case .clipboard:
-            outputImage = UIPasteboard.general.image
-        case .url( _):
-            return
+            if let image = UIPasteboard.general.image {
+                outputImage = image
+            } else if let link = UIPasteboard.general.string {
+                let data = try? Data(contentsOf: URL(string: link)!)
+                if let imageData = data {
+                    outputImage = UIImage(data: imageData)
+                }
+            }
         case .camera:
             return
         case .gallery:
-            return 
+            return
         }
     }
     
