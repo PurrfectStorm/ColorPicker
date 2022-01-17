@@ -11,6 +11,8 @@ enum ImageCreatingMode {
     case clipboard
     case camera
     case gallery
+    
+    //camera and gallery cases should probably go to main vc since its kinda complicated
 }
 
 struct ImageProvider {

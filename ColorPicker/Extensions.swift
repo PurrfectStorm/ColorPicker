@@ -37,7 +37,7 @@ extension UIImage {
 
 extension UIColor {
     
-    static func colorToHex(color: UIColor) -> String? {
+    static func convertToHex(color: UIColor) -> String? {
         guard let components = color.cgColor.components, components.count >= 3 else {
             return nil
         }

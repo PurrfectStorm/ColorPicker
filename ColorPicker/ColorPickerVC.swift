@@ -9,22 +9,22 @@ import UIKit
 
 class ColorPickerVC: UIViewController {
     
-    var provider = ImageProvider()
-    var mainImage: UIImageView!
-    var colorPreview: UIView!
-    var colorDescription: UILabel!
-    var importButton: UIButton!
+    private var provider = ImageProvider()
+    private var mainImage: UIImageView!
+    private var colorPreview: UIView!
+    private var colorDescription: UILabel!
+    private var importButton: UIButton!
     
     //layout views
     
-    override func loadView() {
+    override func loadView() {  // do i really need to do all that stuff in loadview method?
         
         view = UIView()
         view.backgroundColor = .white
         importButton = UIButton()
         importButton.translatesAutoresizingMaskIntoConstraints = false
         importButton.setTitle("+", for: .normal)
-        importButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50))
+        importButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50)) // look at this, thats how you create a view somewhere and then position it with constraints later (omg it actually works)
         importButton.backgroundColor = .gray
         importButton.isUserInteractionEnabled = true
         importButton.addTarget(self, action: #selector(importButtonTapped), for: .touchUpInside)
@@ -34,7 +34,7 @@ class ColorPickerVC: UIViewController {
         view.addSubview(mainImage)
         view.addSubview(importButton)
         
-        colorPreview = UIView(frame: CGRect(x: view.center.x + 80 , y: view.center.y + 700 , width: 50, height: 50))
+        colorPreview = UIView(frame: CGRect(x: view.center.x + 80 , y: view.center.y + 700 , width: 50, height: 50)) //change this line and add constraints for the view
         colorPreview.backgroundColor = .clear
         colorDescription = UILabel()
         colorDescription.isUserInteractionEnabled = false
@@ -77,25 +77,24 @@ class ColorPickerVC: UIViewController {
         self.mainImage.image = image
     }
     
-    @objc func pointTapped(_ sender:UITapGestureRecognizer) {
+    @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
         if mainImage.image != nil {
             let color = mainImage.image!.getPixelColor(pos: sender.location(in: mainImage))
             //        print("Tapped at \(sender.location(in: view))")
             colorPreview.backgroundColor = color
-            if let description = UIColor.colorToHex(color: color) {
+            if let description = UIColor.convertToHex(color: color) {
                 colorDescription.text = description
             }
         }
     }
     
-    @objc func importButtonTapped(_ sender: UIButton) {
+    @objc private func importButtonTapped(_ sender: UIButton) {
         provider.makeImage(in: .clipboard)
         mainImage.image = provider.outputImage
-        
-        view.setNeedsDisplay()
+//        view.setNeedsDisplay()
     }
     
-    func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
+    private func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
         let renderer = UIGraphicsImageRenderer(size: size)
         if let safeImage = image {
             return renderer.image { (context) in
