@@ -10,11 +10,12 @@ import UIKit
 class ColorPickerVC: UIViewController {
     
     var provider = ImageProvider()
-    
     var mainImage: UIImageView!
     var colorPreview: UIView!
     var colorDescription: UILabel!
     var importButton: UIButton!
+    
+    //layout views
     
     override func loadView() {
         
@@ -71,16 +72,20 @@ class ColorPickerVC: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-//        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
+        //        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
         let image = resizeImage(image: provider.outputImage, for: mainImage.bounds.size)
         self.mainImage.image = image
     }
     
     @objc func pointTapped(_ sender:UITapGestureRecognizer) {
-        let color = mainImage.image!.getPixelColor(pos: sender.location(in: mainImage))
-        print("Tapped at \(sender.location(in: view))")
-        colorPreview.backgroundColor = color
-        colorDescription.text = colorToHex(color: color)
+        if mainImage.image != nil {
+            let color = mainImage.image!.getPixelColor(pos: sender.location(in: mainImage))
+            //        print("Tapped at \(sender.location(in: view))")
+            colorPreview.backgroundColor = color
+            if let description = UIColor.colorToHex(color: color) {
+                colorDescription.text = description
+            }
+        }
     }
     
     @objc func importButtonTapped(_ sender: UIButton) {
@@ -101,46 +106,5 @@ class ColorPickerVC: UIViewController {
             return nil
         }
     }
-
-    func colorToHex(color: UIColor) -> String? {
-        guard let components = color.cgColor.components, components.count >= 3 else {
-            return nil
-        }
-        
-        let r = Float(components[0])
-        let g = Float(components[1])
-        let b = Float(components[2])
-        
-        return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
- 
-    }
 }
 
-extension UIImage {
-    func getPixelColor(pos: CGPoint) -> UIColor {
-
-        let size = self.size
-        let dataSize = size.width * size.height * 4
-        var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let context = CGContext(data: &pixelData,
-                                width: Int(size.width),
-                                height: Int(size.height),
-                                bitsPerComponent: 8,
-                                bytesPerRow: 4 * Int(size.width),
-                                space: colorSpace,
-                                bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
-        guard let cgImage = self.cgImage else { return .clear }
-        context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        
-        let pixelInfo: Int = ((Int(size.width) * Int(pos.y)) + Int(pos.x)) * 4
-        //        print("pixelInfo: \(pixelInfo), data: \(data[pixelInfo]), image height: \(self.size.height), image width: \(self.size.width)")
-        let r = CGFloat(pixelData[pixelInfo]) / CGFloat(255.0)
-        let g = CGFloat(pixelData[pixelInfo+1]) / CGFloat(255.0)
-        let b = CGFloat(pixelData[pixelInfo+2]) / CGFloat(255.0)
-        let a = CGFloat(pixelData[pixelInfo+3]) / CGFloat(255.0)
-        
-        return UIColor(red: r, green: g, blue: b, alpha: a)
-    }
-    
-}

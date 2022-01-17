@@ -22,7 +22,7 @@ struct ImageProvider {
             if let image = UIPasteboard.general.image {
                 outputImage = image
             } else if let link = UIPasteboard.general.string {
-                let data = try? Data(contentsOf: URL(string: link)!)
+                let data = try? Data(contentsOf: URL(string: link)!) //need to do it more safely
                 if let imageData = data {
                     outputImage = UIImage(data: imageData)
                 }
