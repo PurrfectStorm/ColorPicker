@@ -6,34 +6,51 @@
 //
 
 import UIKit
+import Photos
+import PhotosUI
 
 enum ImageCreatingMode {
     case clipboard
     case camera
     case gallery
-    
-    //camera and gallery cases should probably go to main vc since its kinda complicated
 }
 
-struct ImageProvider {
-    var outputImage: UIImage?
+class ImageProvider : PHPickerViewControllerDelegate {
     
-    mutating func makeImage(in mode:ImageCreatingMode) {
+    private(set) var outputImage: UIImage?
+    
+    func makeImage(_ mode:ImageCreatingMode) {
         switch mode {
         case .clipboard:
             if let image = UIPasteboard.general.image {
                 outputImage = image
-            } else if let link = UIPasteboard.general.string {
-                let data = try? Data(contentsOf: URL(string: link)!) //need to do it more safely
+            } else if let link = UIPasteboard.general.string { // as URL?
+                let data = try? Data(contentsOf: URL(string: link)!) //add concurrency?
                 if let imageData = data {
                     outputImage = UIImage(data: imageData)
                 }
             }
-        case .camera:
-            return
         case .gallery:
+            let mainVC = ColorPickerVC()
+            var config = PHPickerConfiguration(photoLibrary: .shared())
+            config.filter = .images
+            let vc = PHPickerViewController(configuration: config)
+            vc.delegate = self
+            mainVC.present(vc, animated: true)
+            
+        case .camera:
+            //TBI
             return
         }
     }
     
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+        if let result = results.first, !results.isEmpty {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
+                guard let image = reading as? UIImage, error == nil else {return}
+                self?.outputImage = image
+            }
+        }
+    }
 }

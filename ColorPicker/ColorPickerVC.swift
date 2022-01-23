@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+import PhotosUI
 
 class ColorPickerVC: UIViewController {
     
@@ -14,6 +16,7 @@ class ColorPickerVC: UIViewController {
     private var colorPreview: UIView!
     private var colorDescription: UILabel!
     private var importButton: UIButton!
+    private var galleryImage:UIImage?
     
     //layout views
     
@@ -27,7 +30,7 @@ class ColorPickerVC: UIViewController {
         importButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50)) // look at this, thats how you create a view somewhere and then position it with constraints later (omg it actually works)
         importButton.backgroundColor = .gray
         importButton.isUserInteractionEnabled = true
-        importButton.addTarget(self, action: #selector(importButtonTapped), for: .touchUpInside)
+        importButton.addTarget(self, action: #selector(importFromGallery), for: .touchUpInside)
         mainImage = UIImageView()
         mainImage.translatesAutoresizingMaskIntoConstraints = false
         mainImage.isUserInteractionEnabled = true
@@ -80,7 +83,6 @@ class ColorPickerVC: UIViewController {
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
         if mainImage.image != nil {
             let color = mainImage.image!.getPixelColor(pos: sender.location(in: mainImage))
-            //        print("Tapped at \(sender.location(in: view))")
             colorPreview.backgroundColor = color
             if let description = UIColor.convertToHex(color: color) {
                 colorDescription.text = description
@@ -89,9 +91,19 @@ class ColorPickerVC: UIViewController {
     }
     
     @objc private func importButtonTapped(_ sender: UIButton) {
-        provider.makeImage(in: .clipboard)
+        provider.makeImage(.clipboard)
         mainImage.image = provider.outputImage
-//        view.setNeedsDisplay()
+        //        view.setNeedsDisplay()
+    }
+    
+    @objc private func importFromGallery() {
+//        var config = PHPickerConfiguration(photoLibrary: .shared())
+//        config.filter = .images
+//        let vc = PHPickerViewController(configuration: config)
+//        vc.delegate = self
+//        present(vc, animated: true)
+        provider.makeImage(.gallery)
+        mainImage.image = provider.outputImage
     }
     
     private func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
@@ -105,5 +117,17 @@ class ColorPickerVC: UIViewController {
             return nil
         }
     }
+    
+//    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+//        picker.dismiss(animated: true, completion: nil)
+//        if let result = results.first {
+//            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
+//                guard let image = reading as? UIImage, error == nil else {return}
+//                self?.galleryImage = image
+//                //print(self?.galleryImage)
+//            }
+//        }
+//    }
+
 }
 
