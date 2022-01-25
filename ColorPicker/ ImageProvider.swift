@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Photos
 import PhotosUI
 
 enum ImageCreatingMode {
@@ -31,12 +30,16 @@ class ImageProvider : PHPickerViewControllerDelegate {
                 }
             }
         case .gallery:
-            let mainVC = ColorPickerVC()
             var config = PHPickerConfiguration(photoLibrary: .shared())
             config.filter = .images
             let vc = PHPickerViewController(configuration: config)
             vc.delegate = self
-            mainVC.present(vc, animated: true)
+            let scenes = UIApplication.shared.connectedScenes
+            let windowScene = scenes.first as? UIWindowScene
+            let window = windowScene?.windows.first
+            let mainVC = window?.rootViewController as? ColorPickerVC
+            mainVC?.present(vc, animated: true)
+            mainVC?.refreshImageFromProvider()
             
         case .camera:
             //TBI

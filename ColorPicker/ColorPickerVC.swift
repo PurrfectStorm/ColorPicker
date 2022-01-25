@@ -6,13 +6,11 @@
 //
 
 import UIKit
-import Photos
-import PhotosUI
 
 class ColorPickerVC: UIViewController {
     
     private var provider = ImageProvider()
-    private var mainImage: UIImageView!
+    var mainImage: UIImageView!
     private var colorPreview: UIView!
     private var colorDescription: UILabel!
     private var importButton: UIButton!
@@ -76,8 +74,7 @@ class ColorPickerVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         //        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
-        let image = resizeImage(image: provider.outputImage, for: mainImage.bounds.size)
-        self.mainImage.image = image
+        refreshImageFromProvider()
     }
     
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
@@ -116,6 +113,10 @@ class ColorPickerVC: UIViewController {
         else {
             return nil
         }
+    }
+    
+    func refreshImageFromProvider(){
+        mainImage.image = resizeImage(image: provider.outputImage, for: mainImage.bounds.size)
     }
     
 //    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
