@@ -34,13 +34,10 @@ class ImageProvider : PHPickerViewControllerDelegate {
             config.filter = .images
             let vc = PHPickerViewController(configuration: config)
             vc.delegate = self
-            let scenes = UIApplication.shared.connectedScenes
-            let windowScene = scenes.first as? UIWindowScene
+            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
             let window = windowScene?.windows.first
-            let mainVC = window?.rootViewController as? ColorPickerVC
+            let mainVC = window?.rootViewController as? ColorPickerVC // god this is so ugly
             mainVC?.present(vc, animated: true)
-            mainVC?.refreshImageFromProvider()
-            
         case .camera:
             //TBI
             return
@@ -48,7 +45,12 @@ class ImageProvider : PHPickerViewControllerDelegate {
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: nil)
+        picker.dismiss(animated: true, completion: {
+            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+            let window = windowScene?.windows.first
+            let mainVC = window?.rootViewController as? ColorPickerVC // look at this copy-paste code
+            mainVC?.mainImage.image = self.outputImage
+        })
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
                 guard let image = reading as? UIImage, error == nil else {return}

@@ -74,7 +74,7 @@ class ColorPickerVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         //        let url = Bundle.main.url(forResource: "colors", withExtension: "png")!
-        refreshImageFromProvider()
+        mainImage.image = resizeImage(image: provider.outputImage, for: mainImage.bounds.size)
     }
     
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
@@ -90,15 +90,9 @@ class ColorPickerVC: UIViewController {
     @objc private func importButtonTapped(_ sender: UIButton) {
         provider.makeImage(.clipboard)
         mainImage.image = provider.outputImage
-        //        view.setNeedsDisplay()
     }
     
     @objc private func importFromGallery() {
-//        var config = PHPickerConfiguration(photoLibrary: .shared())
-//        config.filter = .images
-//        let vc = PHPickerViewController(configuration: config)
-//        vc.delegate = self
-//        present(vc, animated: true)
         provider.makeImage(.gallery)
         mainImage.image = provider.outputImage
     }
@@ -114,21 +108,5 @@ class ColorPickerVC: UIViewController {
             return nil
         }
     }
-    
-    func refreshImageFromProvider(){
-        mainImage.image = resizeImage(image: provider.outputImage, for: mainImage.bounds.size)
-    }
-    
-//    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-//        picker.dismiss(animated: true, completion: nil)
-//        if let result = results.first {
-//            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
-//                guard let image = reading as? UIImage, error == nil else {return}
-//                self?.galleryImage = image
-//                //print(self?.galleryImage)
-//            }
-//        }
-//    }
-
 }
 
