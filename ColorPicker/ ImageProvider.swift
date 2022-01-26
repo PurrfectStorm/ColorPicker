@@ -17,6 +17,11 @@ enum ImageCreatingMode {
 class ImageProvider : PHPickerViewControllerDelegate {
     
     private(set) var outputImage: UIImage?
+    private var mainVC: ColorPickerVC? {
+        let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        let window = windowScene?.windows.first
+        return window?.rootViewController as? ColorPickerVC
+    }
     
     func makeImage(_ mode:ImageCreatingMode) {
         switch mode {
@@ -34,9 +39,6 @@ class ImageProvider : PHPickerViewControllerDelegate {
             config.filter = .images
             let vc = PHPickerViewController(configuration: config)
             vc.delegate = self
-            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-            let window = windowScene?.windows.first
-            let mainVC = window?.rootViewController as? ColorPickerVC // god this is so ugly
             mainVC?.present(vc, animated: true)
         case .camera:
             //TBI
@@ -45,11 +47,8 @@ class ImageProvider : PHPickerViewControllerDelegate {
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: {
-            let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-            let window = windowScene?.windows.first
-            let mainVC = window?.rootViewController as? ColorPickerVC // look at this copy-paste code
-            mainVC?.mainImage.image = self.outputImage
+        picker.dismiss(animated: true, completion: { [self] in
+            self.mainVC?.mainImage.image = outputImage
         })
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
