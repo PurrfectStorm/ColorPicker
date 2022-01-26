@@ -14,7 +14,7 @@ enum ImageCreatingMode {
     case gallery
 }
 
-class ImageProvider : PHPickerViewControllerDelegate {
+class ImageProvider: NSObject, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     private(set) var outputImage: UIImage?
     private var mainVC: ColorPickerVC? {
@@ -41,8 +41,10 @@ class ImageProvider : PHPickerViewControllerDelegate {
             vc.delegate = self
             mainVC?.present(vc, animated: true)
         case .camera:
-            //TBI
-            return
+            let photoPicker = UIImagePickerController()
+            photoPicker.sourceType = .camera
+            photoPicker.delegate = self
+            mainVC?.present(photoPicker, animated: true, completion: nil)
         }
     }
     
@@ -56,5 +58,15 @@ class ImageProvider : PHPickerViewControllerDelegate {
                 self?.outputImage = image
             }
         }
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
+        outputImage = image
+        picker.dismiss(animated: true, completion: { [self] in
+            self.mainVC?.mainImage.image = outputImage
+        })
     }
 }

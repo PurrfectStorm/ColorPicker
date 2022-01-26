@@ -28,7 +28,7 @@ class ColorPickerVC: UIViewController {
         importButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50)) // look at this, thats how you create a view somewhere and then position it with constraints later (omg it actually works)
         importButton.backgroundColor = .gray
         importButton.isUserInteractionEnabled = true
-        importButton.addTarget(self, action: #selector(importFromGallery), for: .touchUpInside)
+        importButton.addTarget(self, action: #selector(importFromCamera), for: .touchUpInside)
         mainImage = UIImageView()
         mainImage.translatesAutoresizingMaskIntoConstraints = false
         mainImage.isUserInteractionEnabled = true
@@ -94,6 +94,11 @@ class ColorPickerVC: UIViewController {
     
     @objc private func importFromGallery() {
         provider.makeImage(.gallery)
+        mainImage.image = provider.outputImage
+    }
+    
+    @objc private func importFromCamera() {
+        provider.makeImage(.camera)
         mainImage.image = provider.outputImage
     }
     
