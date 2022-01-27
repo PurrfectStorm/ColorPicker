@@ -13,7 +13,9 @@ class ColorPickerVC: UIViewController {
     var mainImage: UIImageView!
     private var colorPreview: UIView!
     private var colorDescription: UILabel!
-    private var importButton: UIButton!
+    private var cameraButton: UIButton!
+    private var galleryButton: UIButton!
+    private var clipboardButton: UIButton!
     private var galleryImage:UIImage?
     
     //layout views
@@ -22,18 +24,34 @@ class ColorPickerVC: UIViewController {
         
         view = UIView()
         view.backgroundColor = .white
-        importButton = UIButton()
-        importButton.translatesAutoresizingMaskIntoConstraints = false
-        importButton.setTitle("+", for: .normal)
-        importButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50)) // look at this, thats how you create a view somewhere and then position it with constraints later (omg it actually works)
-        importButton.backgroundColor = .gray
-        importButton.isUserInteractionEnabled = true
-        importButton.addTarget(self, action: #selector(importFromCamera), for: .touchUpInside)
+        cameraButton = UIButton()
+        cameraButton.translatesAutoresizingMaskIntoConstraints = false
+        cameraButton.setImage(UIImage(systemName: "camera.shutter.button"), for: .normal)
+        cameraButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50)) // look at this, thats how you create a view somewhere and then position it with constraints later (omg it actually works)
+        cameraButton.isUserInteractionEnabled = true
+        cameraButton.addTarget(self, action: #selector(importFromCamera), for: .touchUpInside)
+        
+        galleryButton = UIButton()
+        galleryButton.translatesAutoresizingMaskIntoConstraints = false
+        galleryButton.setImage(UIImage(systemName: "photo.on.rectangle.angled"), for: .normal)
+        galleryButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50))
+        galleryButton.isUserInteractionEnabled = true
+        galleryButton.addTarget(self, action: #selector(importFromGallery), for: .touchUpInside)
+        
+        clipboardButton = UIButton()
+        clipboardButton.translatesAutoresizingMaskIntoConstraints = false
+        clipboardButton.setImage(UIImage(systemName: "arrow.right.doc.on.clipboard"), for: .normal)
+        clipboardButton.frame = CGRect(origin: .zero, size: .init(width: 50, height: 50))
+        clipboardButton.isUserInteractionEnabled = true
+        clipboardButton.addTarget(self, action: #selector(importFromClipboard), for: .touchUpInside)
+        
         mainImage = UIImageView()
         mainImage.translatesAutoresizingMaskIntoConstraints = false
         mainImage.isUserInteractionEnabled = true
         view.addSubview(mainImage)
-        view.addSubview(importButton)
+        view.addSubview(cameraButton)
+        view.addSubview(galleryButton)
+        view.addSubview(clipboardButton)
         
         colorPreview = UIView(frame: CGRect(x: view.center.x + 80 , y: view.center.y + 700 , width: 50, height: 50)) //change this line and add constraints for the view
         colorPreview.backgroundColor = .clear
@@ -60,9 +78,14 @@ class ColorPickerVC: UIViewController {
             colorDescription.widthAnchor.constraint(equalTo: mainImage.widthAnchor, multiplier: 0.5, constant: -50),
             colorDescription.trailingAnchor.constraint(equalTo: mainImage.trailingAnchor, constant: -20),
             
-            importButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            importButton.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 350)
+            cameraButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            cameraButton.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor, constant: -25),
             
+            galleryButton.bottomAnchor.constraint(equalTo: cameraButton.bottomAnchor),
+            galleryButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor, constant: 100),
+
+            clipboardButton.bottomAnchor.constraint(equalTo: cameraButton.bottomAnchor),
+            clipboardButton.centerXAnchor.constraint(equalTo: cameraButton.centerXAnchor, constant: -100)
         ])
     }
     
@@ -87,19 +110,17 @@ class ColorPickerVC: UIViewController {
         }
     }
     
-    @objc private func importButtonTapped(_ sender: UIButton) {
+    @objc private func importFromClipboard(_ sender: UIButton) {
         provider.makeImage(.clipboard)
         mainImage.image = provider.outputImage
     }
     
     @objc private func importFromGallery() {
         provider.makeImage(.gallery)
-        mainImage.image = provider.outputImage
     }
     
     @objc private func importFromCamera() {
         provider.makeImage(.camera)
-        mainImage.image = provider.outputImage
     }
     
     private func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
