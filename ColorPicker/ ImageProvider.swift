@@ -17,10 +17,10 @@ enum ImageCreatingMode {
 class ImageProvider: NSObject, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     private(set) var outputImage: UIImage?
-    private var mainVC: ColorPickerVC? {
+    private var mainVC: ColorPicker? {
         let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
         let window = windowScene?.windows.first
-        return window?.rootViewController as? ColorPickerVC
+        return window?.rootViewController as? ColorPicker
     }
     
     func makeImage(_ mode:ImageCreatingMode) {
@@ -44,20 +44,20 @@ class ImageProvider: NSObject, PHPickerViewControllerDelegate, UIImagePickerCont
             let photoPicker = UIImagePickerController()
             photoPicker.sourceType = .camera
             photoPicker.delegate = self
-            mainVC?.present(photoPicker, animated: true, completion: nil)
+            mainVC?.present(photoPicker, animated: true)
         }
     }
     
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        picker.dismiss(animated: true, completion: { [self] in
-            self.mainVC?.mainImage.image = outputImage
-        })
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
                 guard let image = reading as? UIImage, error == nil else {return}
                 self?.outputImage = image
             }
         }
+        picker.dismiss(animated: true, completion: { [weak self] in
+            self?.mainVC?.mainImage.image = self?.outputImage
+        })
     }
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
@@ -65,8 +65,8 @@ class ImageProvider: NSObject, PHPickerViewControllerDelegate, UIImagePickerCont
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
         outputImage = image
-        picker.dismiss(animated: true, completion: { [self] in
-            self.mainVC?.mainImage.image = outputImage
+        picker.dismiss(animated: true, completion: { [weak self] in
+            self?.mainVC?.mainImage.image = self?.outputImage
         })
     }
 }
