@@ -60,12 +60,13 @@ extension UIColor {
     }
     
 }
-
+// MARK: - ScrollView extension
 extension ColorPicker: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return mainImage
     }
 }
+// MARK: - Photopicker extensions to choose photos from camera and gallery
 extension ColorPicker: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         if let result = results.first, !results.isEmpty {

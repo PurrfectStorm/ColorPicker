@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import PhotosUI
 
 enum ImageCreatingMode {
     case clipboard
@@ -17,22 +16,41 @@ enum ImageCreatingMode {
 class ImageProvider {
     
     var outputImage: UIImage?
-    var presenter: CPImagePresenter!
-
+    
+    private var presenter: CPImagePresenter
+    
+    init(presenter: CPImagePresenter) {
+        self.presenter = presenter
+    }
+    
     func makeImage(_ mode:ImageCreatingMode) {
         switch mode {
         case .clipboard:
-            if let image = UIPasteboard.general.image {
+            let pasteboard = UIPasteboard.general
+            if pasteboard.hasImages {
+                let image = pasteboard.images?.first
                 presenter.showNotification(text: "Pasted item from clipboard", mode: .regular)
                 outputImage = image
                 presenter.show(image: outputImage!)
+            } else if pasteboard.hasStrings {
+                let possibleLink = pasteboard.strings?.first
+                if let possibleURL = URL(string: possibleLink!) {
+                    if UIApplication.shared.canOpenURL(possibleURL) {
+                        DispatchQueue.main.async { [self] in
+                            let data = try? Data(contentsOf: possibleURL)
+                            if let imageData = data {
+                                outputImage = UIImage(data: imageData)
+                                presenter.showNotification(text: "Pasted item from URL", mode: .regular)
+                                presenter.show(image: outputImage!)
+                            }
+                        }
+                    } else {
+                        presenter.showNotification(text: "Invalid inputURL", mode: .error)
+                    }
+                } else {
+                    presenter.showNotification(text: "No valid images to paste", mode: .error)
+                }
             }
-            //            } else if let link = UIPasteboard.general.string { // as URL?
-            //                let data = try? Data(contentsOf: URL(string: link)) //add concurrency?
-            //                if let imageData = data {
-            //                    presenter.show(image: UIImage(data: imageData)!) //add safety
-            //                }
-            
         case .gallery:
             presenter.show(image: outputImage!)
             presenter.showNotification(text: "Pasted item from gallery", mode: .regular)
@@ -41,4 +59,4 @@ class ImageProvider {
             presenter.showNotification(text: "Pasted item from camera", mode: .regular)
         }
     }
-}
+} 

@@ -9,15 +9,18 @@ import UIKit
 import PhotosUI
 
 class ColorPicker: UIViewController, CPImagePresenter {
-    //MARK: Setting initial variables
     
-    var provider = ImageProvider()
+    //MARK: - Setting initial variables
+    lazy var provider = ImageProvider(presenter: self)
+    var colorPreview = ColorPreview()
     var imageToShow: UIImage? {
         willSet {
             mainImage.image = newValue
         }
         didSet {
             updateScrollViewContentSize()
+            scrollView.minimumZoomScale = view.frame.width/imageToShow!.size.width
+            scrollView.maximumZoomScale = scrollView.minimumZoomScale*3
         }
     }
     lazy var mainImage: UIImageView = {
@@ -64,18 +67,21 @@ class ColorPicker: UIViewController, CPImagePresenter {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.delegate = self
-        scrollView.minimumZoomScale = 0.5
-        scrollView.maximumZoomScale = 3
         return scrollView
     }()
     
-    //MARK: Views setup and layout
+    //MARK: - Views setup and layout
     private func setupViews() {
         bottomButtonsStackView.addArrangedSubview(cameraButton)
         bottomButtonsStackView.addArrangedSubview(galleryButton)
         bottomButtonsStackView.addArrangedSubview(clipboardButton)
         let scrollRecognizer = UITapGestureRecognizer(target: self, action: #selector (pointTapped))
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector (resizeOnDoubleTap))
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        // single tap gesture recognizer won't be activated at the same time with the double one because of next line
+        scrollRecognizer.require(toFail: doubleTapRecognizer)
         scrollView.addGestureRecognizer(scrollRecognizer)
+        scrollView.addGestureRecognizer(doubleTapRecognizer)
         view.addSubview(scrollView)
         updateScrollViewContentSize()
         scrollView.addSubview(mainImage)
@@ -115,39 +121,65 @@ class ColorPicker: UIViewController, CPImagePresenter {
         super.viewDidLoad()
         setupViews()
         setupLayout()
-        provider.presenter = self
     }
     
-    //MARK: Primary function of this VC is showing images
+    //MARK: - Primary function of this VC is showing images
     func show(image: UIImage) {
         imageToShow = image
     }
-    //MARK: User intents
+    //MARK: - User intents
     @objc func showCamera() {
-        let photoPicker = UIImagePickerController()
-        photoPicker.sourceType = .camera
-        photoPicker.delegate = self
-        self.present(photoPicker, animated: true, completion: nil)
+        let cameraPhotoPicker = UIImagePickerController()
+        cameraPhotoPicker.sourceType = .camera
+        cameraPhotoPicker.delegate = self
+        self.present(cameraPhotoPicker, animated: true)
     }
     
     @objc func showGallery() {
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
-        let vc = PHPickerViewController(configuration: config)
-        vc.delegate = self
-        self.present(vc, animated: true)
+        let galleryPhotoPicker = PHPickerViewController(configuration: config)
+        galleryPhotoPicker.delegate = self
+        self.present(galleryPhotoPicker, animated: true)
     }
     
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
-        print("point tapped")
+        
+        let xPosition = sender.location(in: view).x
+        let yPosition = sender.location(in: view).y
+        let xPosForColorPicking = sender.location(in: mainImage).x
+        let yPosForColorPicking = sender.location(in: mainImage).y
+        let colorToShow = mainImage.image?.getPixelColor(pos: CGPoint(x: xPosForColorPicking, y: yPosForColorPicking))
+        if !colorPreview.isOnScreen {
+            colorPreview = ColorPreview(color: colorToShow!)
+            presentColorPreview(at: xPosition, pointY: yPosition)
+        } else {
+            colorPreview.isOnScreen = false
+            colorPreview.removeFromSuperview()
+            colorPreview = ColorPreview(color: colorToShow!)
+            presentColorPreview(at: xPosition, pointY: yPosition)
+        }
     }
-    
+    @objc private func resizeOnDoubleTap(_ sender:UITapGestureRecognizer) {
+        scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
+    }
     @objc private func importFromClipboard(_ sender: UIButton) {
         provider.makeImage(.clipboard)
     }
     
-    //MARK: Notification service
-    internal func showNotification(text: String, mode: NotificationType) {
+    private func presentColorPreview(at pointX: CGFloat, pointY: CGFloat) {
+        view.addSubview(colorPreview)
+        colorPreview.isOnScreen = true
+        NSLayoutConstraint.activate([
+            colorPreview.topAnchor.constraint(equalTo: view.topAnchor, constant: pointY),
+            colorPreview.leftAnchor.constraint(equalTo: view.leftAnchor, constant: pointX),
+            colorPreview.heightAnchor.constraint(equalToConstant: 50),
+            colorPreview.widthAnchor.constraint(equalToConstant: 50)
+            ])
+    }
+    
+    //MARK: - Notification service
+    func showNotification(text: String, mode: NotificationType) {
         let notification = NotificationLabel(text: text, type: mode)
         view.addSubview(notification)
         setupNotificationConstraints(notification)
@@ -155,9 +187,8 @@ class ColorPicker: UIViewController, CPImagePresenter {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             notification.removeFromSuperview()
         }
-
+        
     }
-    
     private func setupNotificationConstraints(_ notification: NotificationLabel) {
         NSLayoutConstraint.activate([
             notification.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -166,17 +197,5 @@ class ColorPicker: UIViewController, CPImagePresenter {
             notification.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-    
-//    private func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
-//        let renderer = UIGraphicsImageRenderer(size: size)
-//        if let safeImage = image {
-//            return renderer.image { (context) in
-//                safeImage.draw(in: CGRect(origin: .zero, size: size))
-//            }
-//        }
-//        else {
-//            return nil
-//        }
-//    }
 }
 
