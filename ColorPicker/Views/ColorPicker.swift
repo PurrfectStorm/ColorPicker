@@ -9,8 +9,9 @@ import UIKit
 import PhotosUI
 
 class ColorPicker: UIViewController, CPImagePresenter {
+    //MARK: Setting initial variables
     
-    private var provider = ImageProvider()
+    var provider = ImageProvider()
     var imageToShow: UIImage? {
         willSet {
             mainImage.image = newValue
@@ -19,9 +20,8 @@ class ColorPicker: UIViewController, CPImagePresenter {
             updateScrollViewContentSize()
         }
     }
-    private lazy var mainImage: UIImageView = {
+    lazy var mainImage: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = imageToShow
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -64,12 +64,12 @@ class ColorPicker: UIViewController, CPImagePresenter {
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.delegate = self
-        scrollView.minimumZoomScale = 1
+        scrollView.minimumZoomScale = 0.5
         scrollView.maximumZoomScale = 3
         return scrollView
     }()
     
-    //layout views
+    //MARK: Views setup and layout
     private func setupViews() {
         bottomButtonsStackView.addArrangedSubview(cameraButton)
         bottomButtonsStackView.addArrangedSubview(galleryButton)
@@ -111,31 +111,31 @@ class ColorPicker: UIViewController, CPImagePresenter {
         }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupViews()
+        setupLayout()
+        provider.presenter = self
+    }
+    
+    //MARK: Primary function of this VC is showing images
     func show(image: UIImage) {
         imageToShow = image
     }
-    
-    @objc internal func showCamera() {
+    //MARK: User intents
+    @objc func showCamera() {
         let photoPicker = UIImagePickerController()
         photoPicker.sourceType = .camera
         photoPicker.delegate = self
         self.present(photoPicker, animated: true, completion: nil)
     }
     
-    @objc internal func showGallery() {
+    @objc func showGallery() {
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
         let vc = PHPickerViewController(configuration: config)
         vc.delegate = self
         self.present(vc, animated: true)
-    }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-        setupLayout()
-        provider.presenter = self
     }
     
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
@@ -145,7 +145,8 @@ class ColorPicker: UIViewController, CPImagePresenter {
     @objc private func importFromClipboard(_ sender: UIButton) {
         provider.makeImage(.clipboard)
     }
-
+    
+    //MARK: Notification service
     internal func showNotification(text: String, mode: NotificationType) {
         let notification = NotificationLabel(text: text, type: mode)
         view.addSubview(notification)
@@ -166,48 +167,16 @@ class ColorPicker: UIViewController, CPImagePresenter {
         ])
     }
     
-    private func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        if let safeImage = image {
-            return renderer.image { (context) in
-                safeImage.draw(in: CGRect(origin: .zero, size: size))
-            }
-        }
-        else {
-            return nil
-        }
-    }
+//    private func resizeImage(image: UIImage?, for size: CGSize) -> UIImage? {
+//        let renderer = UIGraphicsImageRenderer(size: size)
+//        if let safeImage = image {
+//            return renderer.image { (context) in
+//                safeImage.draw(in: CGRect(origin: .zero, size: size))
+//            }
+//        }
+//        else {
+//            return nil
+//        }
+//    }
 }
 
-extension ColorPicker: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return mainImage
-    }
-}
-extension ColorPicker: PHPickerViewControllerDelegate {
-        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            if let result = results.first, !results.isEmpty {
-                result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
-                    guard let image = reading as? UIImage, error == nil else {return}
-                    self?.provider.outputImage = image
-                }
-            }
-            picker.dismiss(animated: true, completion: {
-                self.provider.makeImage(.gallery)
-            })
-        }
-}
-
-extension ColorPicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true, completion: nil)
-        }
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
-            self.provider.outputImage = image
-            picker.dismiss(animated: true, completion: {
-                self.provider.makeImage(.camera)
-            })
-        }
-}

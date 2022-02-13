@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 
 
 protocol CPImagePresenter {
@@ -15,9 +16,8 @@ protocol CPImagePresenter {
     func showNotification(text: String, mode: NotificationType)
 }
 
-
+// MARK: - getting pixel color from any point of non-empty UIImageView
 extension UIImage {
-    // MARK : - getting pixel color from any point of non-empty UIImageView
     func getPixelColor(pos: CGPoint) -> UIColor {
         
         let size = self.size
@@ -44,9 +44,8 @@ extension UIImage {
     }
     
 }
-
+// MARK: - creathng a string representation of hex value of a given UIColor
 extension UIColor {
-    // MARK : - creathng a string representation of hex value of a given UIColor
     static func convertToHex(color: UIColor) -> String? {
         guard let components = color.cgColor.components, components.count >= 3 else {
             return nil
@@ -60,4 +59,35 @@ extension UIColor {
         
     }
     
+}
+
+extension ColorPicker: UIScrollViewDelegate {
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return mainImage
+    }
+}
+extension ColorPicker: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        if let result = results.first, !results.isEmpty {
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
+                guard let image = reading as? UIImage, error == nil else {return}
+                self?.provider.outputImage = image
+            }
+        }
+        picker.dismiss(animated: true, completion: {
+            self.provider.makeImage(.gallery)
+        })
+    }
+}
+extension ColorPicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
+        self.provider.outputImage = image
+        picker.dismiss(animated: true, completion: {
+            self.provider.makeImage(.camera)
+        })
+    }
 }
