@@ -87,7 +87,6 @@ class ColorPicker: UIViewController, CPImagePresenter {
         scrollView.addSubview(mainImage)
         view.addSubview(bottomButtonsStackView)
     }
-    
     private func setupLayout() {
         let constraints: [NSLayoutConstraint] = [
             
@@ -110,31 +109,34 @@ class ColorPicker: UIViewController, CPImagePresenter {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-    
     private func updateScrollViewContentSize(){
         if let safeSize = mainImage.image?.size {
             scrollView.contentSize = safeSize
         }
     }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupLayout()
     }
-    
     //MARK: - Primary function of this VC is showing images
     func show(image: UIImage) {
         imageToShow = image
     }
     //MARK: - User intents
+    
+    //MARK: paste photo from clipboard
+    @objc private func importFromClipboard(_ sender: UIButton) {
+        provider.makeImage(.clipboard)
+    }
+    //MARK: take photo
     @objc func showCamera() {
         let cameraPhotoPicker = UIImagePickerController()
         cameraPhotoPicker.sourceType = .camera
         cameraPhotoPicker.delegate = self
         self.present(cameraPhotoPicker, animated: true)
     }
-    
+    //MARK: choose photo from gallery
     @objc func showGallery() {
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
@@ -142,9 +144,8 @@ class ColorPicker: UIViewController, CPImagePresenter {
         galleryPhotoPicker.delegate = self
         self.present(galleryPhotoPicker, animated: true)
     }
-    
+    //MARK: pick a color from photo
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
-        
         let xPosition = sender.location(in: view).x
         let yPosition = sender.location(in: view).y
         let xPosForColorPicking = sender.location(in: mainImage).x
@@ -160,13 +161,11 @@ class ColorPicker: UIViewController, CPImagePresenter {
             presentColorPreview(at: xPosition, pointY: yPosition)
         }
     }
+    //MARK: resize current photo to min zoom scale
     @objc private func resizeOnDoubleTap(_ sender:UITapGestureRecognizer) {
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
     }
-    @objc private func importFromClipboard(_ sender: UIButton) {
-        provider.makeImage(.clipboard)
-    }
-    
+    //MARK: - show a view with picked color and actions
     private func presentColorPreview(at pointX: CGFloat, pointY: CGFloat) {
         view.addSubview(colorPreview)
         colorPreview.isOnScreen = true
@@ -175,7 +174,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
             colorPreview.leftAnchor.constraint(equalTo: view.leftAnchor, constant: pointX),
             colorPreview.heightAnchor.constraint(equalToConstant: 50),
             colorPreview.widthAnchor.constraint(equalToConstant: 50)
-            ])
+        ])
     }
     
     //MARK: - Notification service
@@ -183,11 +182,9 @@ class ColorPicker: UIViewController, CPImagePresenter {
         let notification = NotificationLabel(text: text, type: mode)
         view.addSubview(notification)
         setupNotificationConstraints(notification)
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             notification.removeFromSuperview()
         }
-        
     }
     private func setupNotificationConstraints(_ notification: NotificationLabel) {
         NSLayoutConstraint.activate([

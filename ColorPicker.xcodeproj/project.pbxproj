@@ -71,7 +71,7 @@
 				EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */,
 				EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */,
 				EC90E36127B87AF400BFA89F /* Views */,
-				EC569BF4277B9B5600874753 /*  ImageProvider.swift */,
+				EC6FBF6D27B9960D009E6055 /* Models */,
 				EC1AA9D22794EFEF001C3BBE /* Extensions.swift */,
 				EC08E700276BD9E1007E32D4 /* Main.storyboard */,
 				EC08E703276BD9E2007E32D4 /* Assets.xcassets */,
@@ -81,6 +81,14 @@
 				EC08E708276BD9E2007E32D4 /* Info.plist */,
 			);
 			path = ColorPicker;
+			sourceTree = "<group>";
+		};
+		EC6FBF6D27B9960D009E6055 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				EC569BF4277B9B5600874753 /*  ImageProvider.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		EC90E36127B87AF400BFA89F /* Views */ = {
