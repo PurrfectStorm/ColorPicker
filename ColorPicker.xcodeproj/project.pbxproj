@@ -16,6 +16,7 @@
 		EC1AA9D32794EFEF001C3BBE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1AA9D22794EFEF001C3BBE /* Extensions.swift */; };
 		EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC569BF4277B9B5600874753 /*  ImageProvider.swift */; };
 		EC81E8FD2774A76300388BED /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EC81E8FC2774A76300388BED /* test.jpg */; };
+		EC90E36327B87B1300BFA89F /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC90E36227B87B1300BFA89F /* NotificationView.swift */; };
 		EC9B3F542774A06D007B1E73 /* colors.png in Resources */ = {isa = PBXBuildFile; fileRef = EC9B3F532774A06D007B1E73 /* colors.png */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +32,7 @@
 		EC1AA9D22794EFEF001C3BBE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		EC569BF4277B9B5600874753 /*  ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " ImageProvider.swift"; sourceTree = "<group>"; };
 		EC81E8FC2774A76300388BED /* test.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = test.jpg; sourceTree = "<group>"; };
+		EC90E36227B87B1300BFA89F /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		EC9B3F532774A06D007B1E73 /* colors.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = colors.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -66,7 +68,7 @@
 			children = (
 				EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */,
 				EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */,
-				EC08E6FE276BD9E1007E32D4 /* ColorPicker.swift */,
+				EC90E36127B87AF400BFA89F /* Views */,
 				EC569BF4277B9B5600874753 /*  ImageProvider.swift */,
 				EC1AA9D22794EFEF001C3BBE /* Extensions.swift */,
 				EC08E700276BD9E1007E32D4 /* Main.storyboard */,
@@ -77,6 +79,15 @@
 				EC08E708276BD9E2007E32D4 /* Info.plist */,
 			);
 			path = ColorPicker;
+			sourceTree = "<group>";
+		};
+		EC90E36127B87AF400BFA89F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				EC08E6FE276BD9E1007E32D4 /* ColorPicker.swift */,
+				EC90E36227B87B1300BFA89F /* NotificationView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -157,6 +168,7 @@
 				EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */,
 				EC08E6FB276BD9E1007E32D4 /* AppDelegate.swift in Sources */,
 				EC08E6FD276BD9E1007E32D4 /* SceneDelegate.swift in Sources */,
+				EC90E36327B87B1300BFA89F /* NotificationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,7 +7,17 @@
 
 import UIKit
 
+
+protocol CPImagePresenter {
+    func show(image: UIImage)
+    func showGallery()
+    func showCamera()
+    func showNotification(text: String, mode: NotificationType)
+}
+
+
 extension UIImage {
+    // MARK : - getting pixel color from any point of non-empty UIImageView
     func getPixelColor(pos: CGPoint) -> UIColor {
         
         let size = self.size
@@ -24,7 +34,7 @@ extension UIImage {
         guard let cgImage = self.cgImage else { return .clear }
         context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
         
-        let pixelInfo: Int = ((Int(size.width) * Int(pos.y)) + Int(pos.x)) * 4
+        let pixelInfo = ((Int(size.width) * Int(pos.y)) + Int(pos.x)) * 4
         let r = CGFloat(pixelData[pixelInfo]) / CGFloat(255.0)
         let g = CGFloat(pixelData[pixelInfo+1]) / CGFloat(255.0)
         let b = CGFloat(pixelData[pixelInfo+2]) / CGFloat(255.0)
@@ -36,7 +46,7 @@ extension UIImage {
 }
 
 extension UIColor {
-    
+    // MARK : - creathng a string representation of hex value of a given UIColor
     static func convertToHex(color: UIColor) -> String? {
         guard let components = color.cgColor.components, components.count >= 3 else {
             return nil

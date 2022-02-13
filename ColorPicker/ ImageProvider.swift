@@ -14,59 +14,31 @@ enum ImageCreatingMode {
     case gallery
 }
 
-class ImageProvider: NSObject, PHPickerViewControllerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class ImageProvider {
     
-    private(set) var outputImage: UIImage?
-    private var mainVC: ColorPicker? {
-        let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
-        let window = windowScene?.windows.first
-        return window?.rootViewController as? ColorPicker
-    }
-    
+    var outputImage: UIImage?
+    var presenter: CPImagePresenter!
+
     func makeImage(_ mode:ImageCreatingMode) {
         switch mode {
         case .clipboard:
             if let image = UIPasteboard.general.image {
+                presenter.showNotification(text: "Pasted item from clipboard", mode: .regular)
                 outputImage = image
-            } else if let link = UIPasteboard.general.string { // as URL?
-                let data = try? Data(contentsOf: URL(string: link)!) //add concurrency?
-                if let imageData = data {
-                    outputImage = UIImage(data: imageData)
-                }
+                presenter.show(image: outputImage!)
             }
+            //            } else if let link = UIPasteboard.general.string { // as URL?
+            //                let data = try? Data(contentsOf: URL(string: link)) //add concurrency?
+            //                if let imageData = data {
+            //                    presenter.show(image: UIImage(data: imageData)!) //add safety
+            //                }
+            
         case .gallery:
-            var config = PHPickerConfiguration(photoLibrary: .shared())
-            config.filter = .images
-            let vc = PHPickerViewController(configuration: config)
-            vc.delegate = self
-            mainVC?.present(vc, animated: true)
+            presenter.show(image: outputImage!)
+            presenter.showNotification(text: "Pasted item from gallery", mode: .regular)
         case .camera:
-            let photoPicker = UIImagePickerController()
-            photoPicker.sourceType = .camera
-            photoPicker.delegate = self
-            mainVC?.present(photoPicker, animated: true)
+            presenter.show(image: outputImage!)
+            presenter.showNotification(text: "Pasted item from camera", mode: .regular)
         }
-    }
-    
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        if let result = results.first, !results.isEmpty {
-            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
-                guard let image = reading as? UIImage, error == nil else {return}
-                self?.outputImage = image
-            }
-        }
-        picker.dismiss(animated: true, completion: { [weak self] in
-            self?.mainVC?.mainImage.image = self?.outputImage
-        })
-    }
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true, completion: nil)
-    }
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
-        outputImage = image
-        picker.dismiss(animated: true, completion: { [weak self] in
-            self?.mainVC?.mainImage.image = self?.outputImage
-        })
     }
 }
