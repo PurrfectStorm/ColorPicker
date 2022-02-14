@@ -21,10 +21,12 @@ class ColorPicker: UIViewController, CPImagePresenter {
             updateScrollViewContentSize()
             scrollView.minimumZoomScale = view.frame.width/imageToShow!.size.width
             scrollView.maximumZoomScale = scrollView.minimumZoomScale*3
+            resizeOnDoubleTap()
         }
     }
     lazy var mainImage: UIImageView = {
         let imageView = UIImageView()
+        imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -75,26 +77,29 @@ class ColorPicker: UIViewController, CPImagePresenter {
         bottomButtonsStackView.addArrangedSubview(cameraButton)
         bottomButtonsStackView.addArrangedSubview(galleryButton)
         bottomButtonsStackView.addArrangedSubview(clipboardButton)
-        let scrollRecognizer = UITapGestureRecognizer(target: self, action: #selector (pointTapped))
+        let colorRecognizer = UITapGestureRecognizer(target: self, action: #selector (pointTapped))
         let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector (resizeOnDoubleTap))
         doubleTapRecognizer.numberOfTapsRequired = 2
         // single tap gesture recognizer won't be activated at the same time with the double one because of next line
-        scrollRecognizer.require(toFail: doubleTapRecognizer)
-        scrollView.addGestureRecognizer(scrollRecognizer)
+        colorRecognizer.require(toFail: doubleTapRecognizer)
+        mainImage.addGestureRecognizer(colorRecognizer)
         scrollView.addGestureRecognizer(doubleTapRecognizer)
         view.addSubview(scrollView)
-        updateScrollViewContentSize()
         scrollView.addSubview(mainImage)
+        updateScrollViewContentSize()
         view.addSubview(bottomButtonsStackView)
     }
     private func setupLayout() {
         let constraints: [NSLayoutConstraint] = [
             
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
             scrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
-            scrollView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            scrollView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
+            mainImage.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            mainImage.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+
             bottomButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             
@@ -121,16 +126,19 @@ class ColorPicker: UIViewController, CPImagePresenter {
     }
     //MARK: - Primary function of this VC is showing images
     func show(image: UIImage) {
+        removeColorPreview()
         imageToShow = image
     }
     //MARK: - User intents
     
     //MARK: paste photo from clipboard
     @objc private func importFromClipboard(_ sender: UIButton) {
+        removeColorPreview()
         provider.makeImage(.clipboard)
     }
     //MARK: take photo
     @objc func showCamera() {
+        removeColorPreview()
         let cameraPhotoPicker = UIImagePickerController()
         cameraPhotoPicker.sourceType = .camera
         cameraPhotoPicker.delegate = self
@@ -138,6 +146,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
     }
     //MARK: choose photo from gallery
     @objc func showGallery() {
+        removeColorPreview()
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
         let galleryPhotoPicker = PHPickerViewController(configuration: config)
@@ -153,30 +162,44 @@ class ColorPicker: UIViewController, CPImagePresenter {
         let colorToShow = mainImage.image?.getPixelColor(pos: CGPoint(x: xPosForColorPicking, y: yPosForColorPicking))
         if !colorPreview.isOnScreen {
             colorPreview = ColorPreview(color: colorToShow!)
-            presentColorPreview(at: xPosition, pointY: yPosition)
+            presentColorPreview(pointX: xPosition, pointY: yPosition)
         } else {
             colorPreview.isOnScreen = false
             colorPreview.removeFromSuperview()
             colorPreview = ColorPreview(color: colorToShow!)
-            presentColorPreview(at: xPosition, pointY: yPosition)
+            presentColorPreview(pointX: xPosition, pointY: yPosition)
         }
     }
     //MARK: resize current photo to min zoom scale
-    @objc private func resizeOnDoubleTap(_ sender:UITapGestureRecognizer) {
+    @objc private func resizeOnDoubleTap() {
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
+        scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 10, height: 10), animated: true)
     }
     //MARK: - show a view with picked color and actions
-    private func presentColorPreview(at pointX: CGFloat, pointY: CGFloat) {
+    private func presentColorPreview(pointX: CGFloat, pointY: CGFloat) {
         view.addSubview(colorPreview)
         colorPreview.isOnScreen = true
         NSLayoutConstraint.activate([
             colorPreview.topAnchor.constraint(equalTo: view.topAnchor, constant: pointY),
             colorPreview.leftAnchor.constraint(equalTo: view.leftAnchor, constant: pointX),
-            colorPreview.heightAnchor.constraint(equalToConstant: 50),
-            colorPreview.widthAnchor.constraint(equalToConstant: 50)
+            colorPreview.heightAnchor.constraint(equalToConstant: 80),
+            colorPreview.widthAnchor.constraint(equalToConstant: 80)
         ])
     }
+    //MARK: - removing color preview on user action
+    private func removeColorPreview() {
+        if colorPreview.isOnScreen{
+            colorPreview.removeFromSuperview()
+        }
+    }
     
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+        removeColorPreview()
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        removeColorPreview()
+    }
     //MARK: - Notification service
     func showNotification(text: String, mode: NotificationType) {
         let notification = NotificationLabel(text: text, type: mode)
@@ -188,7 +211,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
     }
     private func setupNotificationConstraints(_ notification: NotificationLabel) {
         NSLayoutConstraint.activate([
-            notification.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            notification.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
             notification.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             notification.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             notification.heightAnchor.constraint(equalToConstant: 50)

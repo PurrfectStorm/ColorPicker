@@ -16,7 +16,6 @@ enum ImageCreatingMode {
 class ImageProvider {
     
     var outputImage: UIImage?
-    
     private var presenter: CPImagePresenter
     
     init(presenter: CPImagePresenter) {
@@ -33,30 +32,40 @@ class ImageProvider {
                 outputImage = image
                 presenter.show(image: outputImage!)
             } else if pasteboard.hasStrings {
-                let possibleLink = pasteboard.strings?.first
-                if let possibleURL = URL(string: possibleLink!) {
-                    if UIApplication.shared.canOpenURL(possibleURL) {
-                        DispatchQueue.main.async { [self] in
-                            let data = try? Data(contentsOf: possibleURL)
-                            if let imageData = data {
-                                outputImage = UIImage(data: imageData)
-                                presenter.showNotification(text: "Pasted item from URL", mode: .regular)
-                                presenter.show(image: outputImage!)
+                if let possibleLink = pasteboard.strings?.first {
+                    if let possibleURL = URL(string: possibleLink) {
+                        if UIApplication.shared.canOpenURL(possibleURL) {
+                            DispatchQueue.main.async { [self] in
+                                let data = try? Data(contentsOf: possibleURL)
+                                if let imageData = data {
+                                    outputImage = UIImage(data: imageData)
+                                    presenter.showNotification(text: "Pasted item from URL", mode: .regular)
+                                    presenter.show(image: outputImage!)
+                                }
                             }
                         }
                     } else {
-                        presenter.showNotification(text: "Invalid inputURL", mode: .error)
+                        presenter.showNotification(text: "Invalid input URL", mode: .error)
                     }
-                } else {
-                    presenter.showNotification(text: "No valid images to paste", mode: .error)
                 }
+                presenter.showNotification(text: "No valid images to paste", mode: .error)
             }
         case .gallery:
-            presenter.show(image: outputImage!)
-            presenter.showNotification(text: "Pasted item from gallery", mode: .regular)
+            if outputImage != nil {
+                presenter.show(image: outputImage!)
+                presenter.showNotification(text: "Pasted item from gallery", mode: .regular)
+            }
+            else {
+                presenter.showNotification(text: "Gallery import: something went wrong, try again", mode: .error)
+            }
         case .camera:
-            presenter.show(image: outputImage!)
-            presenter.showNotification(text: "Pasted item from camera", mode: .regular)
+            if outputImage != nil {
+                presenter.show(image: outputImage!)
+                presenter.showNotification(text: "Pasted item from camera", mode: .regular)
+            }
+            else {
+                presenter.showNotification(text: "Camera import: something went wrong, try again", mode: .error)
+            }
         }
     }
 } 

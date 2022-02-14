@@ -14,6 +14,8 @@ class ColorPreview: UIView {
     private lazy var preview: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 10
         return view
     }()
     
@@ -27,7 +29,7 @@ class ColorPreview: UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 10
-        self.backgroundColor = .tertiaryLabel
+        self.backgroundColor = UIColor(red: 80/255, green: 80/255, blue: 80/255, alpha: 0.5)
         setupViews()
     }
     
