@@ -99,7 +99,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
             
             mainImage.topAnchor.constraint(equalTo: scrollView.topAnchor),
             mainImage.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-
+            
             bottomButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
             
@@ -160,15 +160,28 @@ class ColorPicker: UIViewController, CPImagePresenter {
         let xPosForColorPicking = sender.location(in: mainImage).x
         let yPosForColorPicking = sender.location(in: mainImage).y
         let colorToShow = mainImage.image?.getPixelColor(pos: CGPoint(x: xPosForColorPicking, y: yPosForColorPicking))
+        let newPosition = calculateAdjustedPosition(originX: xPosition, originY: yPosition)
         if !colorPreview.isOnScreen {
             colorPreview = ColorPreview(color: colorToShow!)
-            presentColorPreview(pointX: xPosition, pointY: yPosition)
+            presentColorPreview(pointX: newPosition.x, pointY: newPosition.y)
         } else {
             colorPreview.isOnScreen = false
             colorPreview.removeFromSuperview()
             colorPreview = ColorPreview(color: colorToShow!)
-            presentColorPreview(pointX: xPosition, pointY: yPosition)
+            presentColorPreview(pointX: newPosition.x, pointY: newPosition.y)
         }
+    }
+    //checking input coordinates to prevent color preview appearing offscreen
+    private func calculateAdjustedPosition(originX: CGFloat, originY: CGFloat) -> (x:CGFloat, y:CGFloat){
+        var adjX = originX
+        var adjY = originY
+        if originX > (view.bounds.width - 100) {
+            adjX = originX - 90
+        }
+        if originY > (view.bounds.height - 100) {
+            adjY = originY - 90
+        }
+        return (adjX,adjY)
     }
     //MARK: resize current photo to min zoom scale
     @objc private func resizeOnDoubleTap() {
