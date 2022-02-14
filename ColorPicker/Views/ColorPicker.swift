@@ -137,7 +137,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         provider.makeImage(.clipboard)
     }
     //MARK: take photo
-    @objc func showCamera() {
+    @objc private func showCamera() {
         removeColorPreview()
         let cameraPhotoPicker = UIImagePickerController()
         cameraPhotoPicker.sourceType = .camera
@@ -145,7 +145,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         self.present(cameraPhotoPicker, animated: true)
     }
     //MARK: choose photo from gallery
-    @objc func showGallery() {
+    @objc private func showGallery() {
         removeColorPreview()
         var config = PHPickerConfiguration(photoLibrary: .shared())
         config.filter = .images
@@ -186,7 +186,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
     //MARK: resize current photo to min zoom scale
     @objc private func resizeOnDoubleTap() {
         scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
-        scrollView.scrollRectToVisible(CGRect(x: 0, y: 0, width: 10, height: 10), animated: true)
+        scrollView.scrollRectToVisible(view.bounds, animated: true)
     }
     //MARK: - show a view with picked color and actions
     private func presentColorPreview(pointX: CGFloat, pointY: CGFloat) {

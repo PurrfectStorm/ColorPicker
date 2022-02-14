@@ -11,15 +11,12 @@ import PhotosUI
 
 protocol CPImagePresenter {
     func show(image: UIImage)
-    func showGallery()
-    func showCamera()
     func showNotification(text: String, mode: NotificationType)
 }
 
 // MARK: - getting pixel color from any point of non-empty UIImageView
 extension UIImage {
     func getPixelColor(pos: CGPoint) -> UIColor {
-        
         let size = self.size
         let dataSize = size.width * size.height * 4
         var pixelData = [UInt8](repeating: 0, count: Int(dataSize))
@@ -33,16 +30,13 @@ extension UIImage {
                                 bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)
         guard let cgImage = self.cgImage else { return .clear }
         context?.draw(cgImage, in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
-        
         let pixelInfo = ((Int(size.width) * Int(pos.y)) + Int(pos.x)) * 4
         let r = CGFloat(pixelData[pixelInfo]) / CGFloat(255.0)
         let g = CGFloat(pixelData[pixelInfo+1]) / CGFloat(255.0)
         let b = CGFloat(pixelData[pixelInfo+2]) / CGFloat(255.0)
         let a = CGFloat(pixelData[pixelInfo+3]) / CGFloat(255.0)
-        
         return UIColor(red: r, green: g, blue: b, alpha: a)
     }
-    
 }
 // MARK: - creathng a string representation of hex value of a given UIColor
 extension UIColor {
@@ -50,15 +44,11 @@ extension UIColor {
         guard let components = color.cgColor.components, components.count >= 3 else {
             return nil
         }
-        
         let r = Float(components[0])
         let g = Float(components[1])
         let b = Float(components[2])
-        
         return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
-        
     }
-    
 }
 // MARK: - ScrollView extension
 extension ColorPicker: UIScrollViewDelegate {
