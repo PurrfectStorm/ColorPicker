@@ -12,8 +12,9 @@ class ColorPicker: UIViewController, CPImagePresenter {
     
     //MARK: - Setting initial variables
     lazy var provider = ImageProvider(presenter: self)
-    var colorPreview = ColorPreview()
-    var imageToShow: UIImage? {
+    private var colorPreview = ColorPreview()
+    private var manipulator = ColorManipulator()
+    private var imageToShow: UIImage? {
         willSet {
             mainImage.image = newValue
         }
@@ -199,6 +200,16 @@ class ColorPicker: UIViewController, CPImagePresenter {
             colorPreview.widthAnchor.constraint(equalToConstant: 80)
         ])
     }
+    
+    func colorPrevivewTapped() {
+        guard let components = colorPreview.preview.backgroundColor!.cgColor.components, components.count >= 3 else {return}
+        let r = Float(components[0])
+        let g = Float(components[1])
+        let b = Float(components[2])
+        let a = Float(components[3])
+        let colorToSave = Color(description: "test", rValue: Double(r), gValue: Double(g), bValue: Double(b), aValue: Double(a), dateTaken: Date())
+        manipulator.saveColor(color: colorToSave)
+    }
     //MARK: - removing color preview on user action
     private func removeColorPreview() {
         if colorPreview.isOnScreen{
@@ -206,11 +217,11 @@ class ColorPicker: UIViewController, CPImagePresenter {
         }
     }
     
-    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    private func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         removeColorPreview()
     }
     
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    private func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         removeColorPreview()
     }
     //MARK: - Notification service

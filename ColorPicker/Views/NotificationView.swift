@@ -5,8 +5,6 @@
 //  Created by Holy Light on 13.02.2022.
 //
 
-import Foundation
-
 import UIKit
 
 //MARK: basically a UIlabel to show a given text of notification

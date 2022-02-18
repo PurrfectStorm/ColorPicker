@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import AVFAudio
 
 class ColorPreview: UIView {
     
     var isOnScreen: Bool = false
     
-    private lazy var preview: UIView = {
+    lazy var preview: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
@@ -26,6 +27,8 @@ class ColorPreview: UIView {
     init(color: UIColor) {
         super.init(frame: .zero)
         preview.backgroundColor = color
+        let recognizer = UITapGestureRecognizer(target: self, action: #selector (colorPrevivewTapped))
+        self.addGestureRecognizer(recognizer)
         self.translatesAutoresizingMaskIntoConstraints = false
         self.layer.masksToBounds = true
         self.layer.cornerRadius = 10
@@ -49,6 +52,16 @@ class ColorPreview: UIView {
             preview.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             preview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
         ])
+    }
+    
+    @objc private func colorPrevivewTapped() {
+        var parentViewController: UIViewController? {
+            let s = sequence(first: self) { $0.next }
+            return s.compactMap { $0 as? UIViewController }.first
+        }
+        if let hostVC = parentViewController as? ColorPicker {
+            hostVC.colorPrevivewTapped()
+        }
     }
     
     override class var requiresConstraintBasedLayout: Bool {

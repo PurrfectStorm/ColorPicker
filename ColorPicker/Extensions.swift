@@ -58,7 +58,7 @@ extension ColorPicker: UIScrollViewDelegate {
 }
 // MARK: - Photopicker extensions to choose photos from camera and gallery
 
-//TODO: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but if fact rotated into landscape bitwise rendering getPixelColor method useless
+//TODO: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but in fact rotated into landscape bitwise rendering getPixelColor method useless
 extension ColorPicker: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         if let result = results.first, !results.isEmpty {
