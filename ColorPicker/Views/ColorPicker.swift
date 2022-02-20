@@ -13,7 +13,6 @@ class ColorPicker: UIViewController, CPImagePresenter {
     //MARK: - Setting initial variables
     lazy var provider = ImageProvider(presenter: self)
     private var colorPreview = ColorPreview()
-    private var manipulator = ColorManipulator()
     private var imageToShow: UIImage? {
         willSet {
             mainImage.image = newValue
@@ -21,7 +20,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         didSet {
             updateScrollViewContentSize()
             scrollView.minimumZoomScale = view.frame.width/imageToShow!.size.width
-            scrollView.maximumZoomScale = scrollView.minimumZoomScale*3
+            scrollView.maximumZoomScale = scrollView.minimumZoomScale*5
             resizeOnDoubleTap()
         }
     }
@@ -45,6 +44,14 @@ class ColorPicker: UIViewController, CPImagePresenter {
         button.setImage(UIImage(systemName: "photo.on.rectangle.angled"), for: .normal)
         button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(showGallery), for: .touchUpInside)
+        return button
+    }()
+    private lazy var menuButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "list.bullet.rectangle.portrait"), for: .normal)
+        button.isUserInteractionEnabled = true
+        button.addTarget(self, action: #selector(showMenu), for: .touchUpInside)
         return button
     }()
     private lazy var clipboardButton: UIButton = {
@@ -75,6 +82,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
     
     //MARK: - Views setup and layout
     private func setupViews() {
+        bottomButtonsStackView.addArrangedSubview(menuButton)
         bottomButtonsStackView.addArrangedSubview(cameraButton)
         bottomButtonsStackView.addArrangedSubview(galleryButton)
         bottomButtonsStackView.addArrangedSubview(clipboardButton)
@@ -112,6 +120,9 @@ class ColorPicker: UIViewController, CPImagePresenter {
             
             galleryButton.heightAnchor.constraint(equalToConstant: 50),
             galleryButton.widthAnchor.constraint(equalToConstant: 50),
+            
+            menuButton.heightAnchor.constraint(equalToConstant: 50),
+            menuButton.widthAnchor.constraint(equalToConstant: 50),
         ]
         NSLayoutConstraint.activate(constraints)
     }
@@ -124,6 +135,10 @@ class ColorPicker: UIViewController, CPImagePresenter {
         super.viewDidLoad()
         setupViews()
         setupLayout()
+//        let defaults = UserDefaults()
+//        if let savedColors = defaults.value(forKey: "Colors") as? [Color] {
+//            ColorManipulator.colors = savedColors
+//        }
     }
     //MARK: - Primary function of this VC is showing images
     func show(image: UIImage) {
@@ -172,6 +187,13 @@ class ColorPicker: UIViewController, CPImagePresenter {
             presentColorPreview(pointX: newPosition.x, pointY: newPosition.y)
         }
     }
+    //MARK: show settings
+    @objc private func showMenu() {
+        let menuVC = MenuViewController()
+        menuVC.title = "Menu"
+        let navVC = UINavigationController(rootViewController: menuVC)
+        present(navVC, animated: true)
+    }
     //checking input coordinates to prevent color preview appearing offscreen
     private func calculateAdjustedPosition(originX: CGFloat, originY: CGFloat) -> (x:CGFloat, y:CGFloat){
         var adjX = originX
@@ -207,8 +229,10 @@ class ColorPicker: UIViewController, CPImagePresenter {
         let g = Float(components[1])
         let b = Float(components[2])
         let a = Float(components[3])
-        let colorToSave = Color(description: "test", rValue: Double(r), gValue: Double(g), bValue: Double(b), aValue: Double(a), dateTaken: Date())
-        manipulator.saveColor(color: colorToSave)
+        let colorsCount = ColorManipulator.colors.count
+        let colorToSave = Color(description: "Color \(colorsCount)", rValue: r, gValue: g, bValue: b, aValue: a, dateTaken: Date())
+        ColorManipulator.saveColor(color: colorToSave)
+        showNotification(text: "Color saved", mode: .regular)
     }
     //MARK: - removing color preview on user action
     private func removeColorPreview() {
@@ -217,11 +241,11 @@ class ColorPicker: UIViewController, CPImagePresenter {
         }
     }
     
-    private func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
+    func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         removeColorPreview()
     }
     
-    private func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         removeColorPreview()
     }
     //MARK: - Notification service

@@ -9,28 +9,33 @@ import Foundation
 
 struct ColorManipulator {
     
-    var colors: [Color] = []
-    var colorSets:[ColorSet] = []
+    static var colors: [Color] = [] //{
+    //        willSet {
+    //            let defaults = UserDefaults()
+    //            defaults.set(newValue, forKey: "colors")
+    //        }
+    //    }
+    //    var colorSets:[ColorSet] = []
     
-    mutating func saveColor(color: Color) {
+    static func saveColor(color: Color) {
         colors.append(color)
-        print (colors)
     }
     
-    mutating func deleteColor(position: Int) {
-        colors.remove(at: position)
+    static func deleteColor(position: Int) {
+        if colors.count > 0 && position < colors.count {
+            colors.remove(at: position)
+        }
     }
-    
-    mutating func addColorSet() {
-        
-    }
-    
-    mutating func updateColorSet() {
-        
-    }
-    
-    mutating func deleteColorSet() {
-        
-    }
-
+    //
+    //    mutating func addColorSet() {
+    //
+    //    }
+    //
+    //    mutating func updateColorSet() {
+    //
+    //    }
+    //
+    //    mutating func deleteColorSet() {
+    //
+    //    }
 }

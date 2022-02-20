@@ -35,12 +35,12 @@ class ImageProvider {
                 if let possibleLink = pasteboard.strings?.first {
                     if let possibleURL = URL(string: possibleLink) {
                         if UIApplication.shared.canOpenURL(possibleURL) {
-                            DispatchQueue.main.async { [self] in
+                            DispatchQueue.main.async { [weak self] in
                                 let data = try? Data(contentsOf: possibleURL)
                                 if let imageData = data {
-                                    outputImage = UIImage(data: imageData)
-                                    presenter.showNotification(text: "Pasted item from URL", mode: .regular)
-                                    presenter.show(image: outputImage!)
+                                    self?.outputImage = UIImage(data: imageData)
+                                    self?.presenter.showNotification(text: "Pasted item from URL", mode: .regular)
+                                    self?.presenter.show(image: (self?.outputImage!)!)
                                 }
                             }
                         }
