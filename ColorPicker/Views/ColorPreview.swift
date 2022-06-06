@@ -6,11 +6,10 @@
 //
 
 import UIKit
-import AVFAudio
 
 class ColorPreview: UIView {
     
-    var isOnScreen: Bool = false
+    var isOnScreen = false
     
     lazy var preview: UIView = {
         let view = UIView()
@@ -18,6 +17,15 @@ class ColorPreview: UIView {
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 10
         return view
+    }()
+    
+    lazy var icon: UIImageView = {
+        let container = UIImageView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        let image = UIImage(systemName: "eyedropper")
+        container.image = image
+        container.alpha = 0.5
+        return container
     }()
     
     required init?(coder: NSCoder) {
@@ -42,6 +50,7 @@ class ColorPreview: UIView {
     
     private func setupViews() {
         addSubview(preview)
+        preview.addSubview(icon)
         setupLayout()
     }
     
@@ -51,6 +60,11 @@ class ColorPreview: UIView {
             preview.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
             preview.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
             preview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            
+            icon.centerXAnchor.constraint(equalTo: centerXAnchor),
+            icon.centerYAnchor.constraint(equalTo: centerYAnchor),
+            icon.widthAnchor.constraint(equalTo: widthAnchor, constant: -50),
+            icon.heightAnchor.constraint(equalTo: heightAnchor, constant: -50),
         ])
     }
     
@@ -59,7 +73,7 @@ class ColorPreview: UIView {
             let s = sequence(first: self) { $0.next }
             return s.compactMap { $0 as? UIViewController }.first
         }
-        if let hostVC = parentViewController as? ColorPicker {
+        if let hostVC = parentViewController as? MainScreenViewController {
             hostVC.colorPrevivewTapped()
         }
     }

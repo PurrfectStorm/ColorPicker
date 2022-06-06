@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Color {
+struct Color: Codable {
     let description: String
     let rValue: Float
     let gValue: Float
@@ -16,7 +16,7 @@ struct Color {
     let dateTaken: Date
 }
 
-struct ColorSet {
+struct ColorSet: Codable {
     let title: String
     var colors: [Color]
     let source: Data?

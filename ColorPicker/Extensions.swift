@@ -9,7 +9,7 @@ import UIKit
 import PhotosUI
 
 
-protocol CPImagePresenter {
+protocol CPImagePresenter: AnyObject {
     func show(image: UIImage)
     func showNotification(text: String, mode: NotificationType)
 }
@@ -51,7 +51,7 @@ extension UIColor {
     }
 }
 // MARK: - ScrollView extension
-extension ColorPicker: UIScrollViewDelegate {
+extension MainScreenViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return mainImage
     }
@@ -59,7 +59,7 @@ extension ColorPicker: UIScrollViewDelegate {
 // MARK: - Photopicker extensions to choose photos from camera and gallery
 
 //TODO: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but in fact rotated into landscape bitwise rendering getPixelColor method useless
-extension ColorPicker: PHPickerViewControllerDelegate {
+extension MainScreenViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
@@ -72,7 +72,7 @@ extension ColorPicker: PHPickerViewControllerDelegate {
         })
     }
 }
-extension ColorPicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension MainScreenViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
     }

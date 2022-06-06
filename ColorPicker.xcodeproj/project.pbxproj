@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		EC08E6FB276BD9E1007E32D4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */; };
 		EC08E6FD276BD9E1007E32D4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */; };
-		EC08E6FF276BD9E1007E32D4 /* ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC08E6FE276BD9E1007E32D4 /* ColorPicker.swift */; };
+		EC08E6FF276BD9E1007E32D4 /* MainScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC08E6FE276BD9E1007E32D4 /* MainScreenViewController.swift */; };
 		EC08E702276BD9E1007E32D4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC08E700276BD9E1007E32D4 /* Main.storyboard */; };
 		EC08E704276BD9E2007E32D4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EC08E703276BD9E2007E32D4 /* Assets.xcassets */; };
 		EC08E707276BD9E2007E32D4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EC08E705276BD9E2007E32D4 /* LaunchScreen.storyboard */; };
@@ -29,7 +29,7 @@
 		EC08E6F7276BD9E1007E32D4 /* ColorPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ColorPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		EC08E6FE276BD9E1007E32D4 /* ColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPicker.swift; sourceTree = "<group>"; };
+		EC08E6FE276BD9E1007E32D4 /* MainScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenViewController.swift; sourceTree = "<group>"; };
 		EC08E701276BD9E1007E32D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		EC08E703276BD9E2007E32D4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EC08E706276BD9E2007E32D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -113,7 +113,7 @@
 		EC90E36127B87AF400BFA89F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				EC08E6FE276BD9E1007E32D4 /* ColorPicker.swift */,
+				EC08E6FE276BD9E1007E32D4 /* MainScreenViewController.swift */,
 				EC90E36227B87B1300BFA89F /* NotificationView.swift */,
 				EC6FBF6B27B989A7009E6055 /* ColorPreview.swift */,
 				EC69F77E27C24E1B003C7524 /* Menu Views */,
@@ -196,7 +196,7 @@
 				EC1AA9D32794EFEF001C3BBE /* Extensions.swift in Sources */,
 				ECC4945927C2A4B900C1DC55 /* SavedColorCell.swift in Sources */,
 				ECC6207327BEF91C0087F595 /* ColorModel.swift in Sources */,
-				EC08E6FF276BD9E1007E32D4 /* ColorPicker.swift in Sources */,
+				EC08E6FF276BD9E1007E32D4 /* MainScreenViewController.swift in Sources */,
 				EC6FBF6C27B989A7009E6055 /* ColorPreview.swift in Sources */,
 				EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */,
 				ECD334C227C1705A00C5E86E /* Menu.swift in Sources */,

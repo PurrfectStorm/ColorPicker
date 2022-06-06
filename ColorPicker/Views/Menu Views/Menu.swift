@@ -8,7 +8,6 @@
 import UIKit
 
 //MARK: - root menu view controller
-
 class MenuViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     private lazy var rootTV: UITableView = {

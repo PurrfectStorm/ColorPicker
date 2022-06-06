@@ -1,6 +1,6 @@
 //
-//  ColorPicker.swift
-//  ColorPicker
+//  MainScreenViewController.swift
+//  MainScreenViewController
 //
 //  Created by Holy Light on 16.12.2021.
 //
@@ -8,28 +8,34 @@
 import UIKit
 import PhotosUI
 
-class ColorPicker: UIViewController, CPImagePresenter {
+class MainScreenViewController: UIViewController, CPImagePresenter {
     
     //MARK: - Setting initial variables
-    lazy var provider = ImageProvider(presenter: self)
+    private(set) lazy var provider = ImageProvider(presenter: self)
+    
+    private lazy var manipulator = ColorManipulator()
+    
     private var colorPreview = ColorPreview()
+    
     private var imageToShow: UIImage? {
         willSet {
             mainImage.image = newValue
         }
         didSet {
             updateScrollViewContentSize()
-            scrollView.minimumZoomScale = view.frame.width/imageToShow!.size.width
-            scrollView.maximumZoomScale = scrollView.minimumZoomScale*5
+            imageScrollView.minimumZoomScale = view.frame.width/imageToShow!.size.width
+            imageScrollView.maximumZoomScale = imageScrollView.minimumZoomScale*5
             resizeOnDoubleTap()
         }
     }
+    
     lazy var mainImage: UIImageView = {
         let imageView = UIImageView()
         imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
+    
     private lazy var cameraButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -38,6 +44,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         button.addTarget(self, action: #selector(showCamera), for: .touchUpInside)
         return button
     }()
+    
     private lazy var galleryButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -46,6 +53,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         button.addTarget(self, action: #selector(showGallery), for: .touchUpInside)
         return button
     }()
+    
     private lazy var menuButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -54,6 +62,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         button.addTarget(self, action: #selector(showMenu), for: .touchUpInside)
         return button
     }()
+    
     private lazy var clipboardButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -62,6 +71,7 @@ class ColorPicker: UIViewController, CPImagePresenter {
         button.addTarget(self, action: #selector(importFromClipboard), for: .touchUpInside)
         return button
     }()
+    
     private lazy var bottomButtonsStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -71,7 +81,8 @@ class ColorPicker: UIViewController, CPImagePresenter {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-    private lazy var scrollView: UIScrollView = {
+    
+    private lazy var imageScrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.showsVerticalScrollIndicator = false
@@ -92,22 +103,22 @@ class ColorPicker: UIViewController, CPImagePresenter {
         // single tap gesture recognizer won't be activated at the same time with the double one because of next line
         colorRecognizer.require(toFail: doubleTapRecognizer)
         mainImage.addGestureRecognizer(colorRecognizer)
-        scrollView.addGestureRecognizer(doubleTapRecognizer)
-        view.addSubview(scrollView)
-        scrollView.addSubview(mainImage)
+        imageScrollView.addGestureRecognizer(doubleTapRecognizer)
+        view.addSubview(imageScrollView)
+        imageScrollView.addSubview(mainImage)
         updateScrollViewContentSize()
         view.addSubview(bottomButtonsStackView)
     }
     private func setupLayout() {
         let constraints: [NSLayoutConstraint] = [
             
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
+            imageScrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            imageScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            imageScrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
+            imageScrollView.heightAnchor.constraint(equalTo: view.heightAnchor),
             
-            mainImage.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            mainImage.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            mainImage.topAnchor.constraint(equalTo: imageScrollView.topAnchor),
+            mainImage.leadingAnchor.constraint(equalTo: imageScrollView.leadingAnchor),
             
             bottomButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
@@ -128,17 +139,13 @@ class ColorPicker: UIViewController, CPImagePresenter {
     }
     private func updateScrollViewContentSize(){
         if let safeSize = mainImage.image?.size {
-            scrollView.contentSize = safeSize
+            imageScrollView.contentSize = safeSize
         }
     }
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupLayout()
-//        let defaults = UserDefaults()
-//        if let savedColors = defaults.value(forKey: "Colors") as? [Color] {
-//            ColorManipulator.colors = savedColors
-//        }
     }
     //MARK: - Primary function of this VC is showing images
     func show(image: UIImage) {
@@ -208,8 +215,8 @@ class ColorPicker: UIViewController, CPImagePresenter {
     }
     //MARK: resize current photo to min zoom scale
     @objc private func resizeOnDoubleTap() {
-        scrollView.setZoomScale(scrollView.minimumZoomScale, animated: true)
-        scrollView.scrollRectToVisible(view.bounds, animated: true)
+        imageScrollView.setZoomScale(imageScrollView.minimumZoomScale, animated: true)
+        imageScrollView.scrollRectToVisible(view.bounds, animated: true)
     }
     //MARK: - show a view with picked color and actions
     private func presentColorPreview(pointX: CGFloat, pointY: CGFloat) {
@@ -229,14 +236,14 @@ class ColorPicker: UIViewController, CPImagePresenter {
         let g = Float(components[1])
         let b = Float(components[2])
         let a = Float(components[3])
-        let colorsCount = ColorManipulator.colors.count
+        let colorsCount = manipulator.savedColors.count
         let colorToSave = Color(description: "Color \(colorsCount)", rValue: r, gValue: g, bValue: b, aValue: a, dateTaken: Date())
-        ColorManipulator.saveColor(color: colorToSave)
+        manipulator.saveColor(color: colorToSave)
         showNotification(text: "Color saved", mode: .regular)
     }
     //MARK: - removing color preview on user action
     private func removeColorPreview() {
-        if colorPreview.isOnScreen{
+        if colorPreview.isOnScreen {
             colorPreview.removeFromSuperview()
         }
     }
