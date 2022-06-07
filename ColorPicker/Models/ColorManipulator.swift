@@ -29,6 +29,12 @@ struct ColorManipulator {
         }
     }
     
+    mutating func renameColor(name: String, position: Int) {
+        if savedColors.count > 0 && position < savedColors.count {
+            savedColors[position].description = name
+        }
+    }
+    
     private func synchronizeColorsWithUD(colors: [Color]) {
         let defaults = UserDefaults.standard
         let encodedColors = try? JSONEncoder().encode(colors)

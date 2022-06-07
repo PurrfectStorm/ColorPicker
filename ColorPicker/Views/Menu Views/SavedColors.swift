@@ -11,6 +11,7 @@ import UIKit
 class SavedColorsViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private lazy var manipulator = ColorManipulator()
+    private var cellPositionForRenaming: Int?
     
     private lazy var colorsTV: UITableView = {
         let tableView = UITableView()
@@ -19,9 +20,31 @@ class SavedColorsViewController : UIViewController, UITableViewDelegate, UITable
         return tableView
     }()
     
+    private var alert: UIAlertController {
+        let alert = UIAlertController(title: "Rename color", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self]_ in
+            guard let fields = alert.textFields else {
+                return
+            }
+            let nameField = fields[0]
+            guard let newName = nameField.text, !newName.isEmpty else {
+                return
+            }
+            if let newPosition = self?.cellPositionForRenaming {
+                self?.manipulator.renameColor(name: newName, position: newPosition)
+                self?.colorsTV.reloadData()
+            }
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
+        alert.addTextField()
+        return alert
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(colorsTV)
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPressToRename(sender:)))
+        colorsTV.addGestureRecognizer(longPressRecognizer)
         colorsTV.delegate = self
         colorsTV.dataSource = self
         NSLayoutConstraint.activate([
@@ -54,6 +77,16 @@ class SavedColorsViewController : UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    @objc private func longPressToRename (sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: colorsTV)
+            if let indexPath = colorsTV.indexPathForRow(at: touchPoint) {
+                cellPositionForRenaming = indexPath.row
+                present(alert, animated: true)
+            }
+        }
     }
 }
 
