@@ -8,10 +8,12 @@
 import UIKit
 
 //MARK: - saved colors submenu list
-class SavedColorsViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ColorsViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private lazy var manipulator = ColorManipulator()
+    
     private var cellPositionForRenaming: Int?
+    private var mode: OperatingMode
     
     private lazy var colorsTV: UITableView = {
         let tableView = UITableView()
@@ -22,7 +24,7 @@ class SavedColorsViewController : UIViewController, UITableViewDelegate, UITable
     
     private var alert: UIAlertController {
         let alert = UIAlertController(title: "Rename color", message: nil, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self]_ in
+        alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self] _ in
             guard let fields = alert.textFields else {
                 return
             }
@@ -31,13 +33,22 @@ class SavedColorsViewController : UIViewController, UITableViewDelegate, UITable
                 return
             }
             if let newPosition = self?.cellPositionForRenaming {
-                self?.manipulator.renameColor(name: newName, position: newPosition)
+                self?.manipulator.renameColor(name: newName, position: newPosition, mode: self!.mode)
                 self?.colorsTV.reloadData()
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
         alert.addTextField()
         return alert
+    }
+    
+    init(mode:OperatingMode) {
+        self.mode = mode
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -69,7 +80,7 @@ class SavedColorsViewController : UIViewController, UITableViewDelegate, UITable
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            manipulator.deleteColor(position: indexPath.row)
+            manipulator.deleteColor(position: indexPath.row, mode: mode)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.reloadData()
         }

@@ -88,7 +88,7 @@ class SavedColorCell: UITableViewCell {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, h:mm a"
         dateLabel.text = "Taken \(formatter.string(from: color.dateTaken))"
-        titleLabel.text = color.description
+        titleLabel.text = color.title
         if let description = UIColor.convertToHex(color: colorToShow) {
             hexDescription.text = "Hex value #\(description)"
         }

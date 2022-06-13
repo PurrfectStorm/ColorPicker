@@ -237,8 +237,8 @@ class MainScreenViewController: UIViewController, CPImagePresenter {
         let b = Float(components[2])
         let a = Float(components[3])
         let colorsCount = manipulator.savedColors.count
-        let colorToSave = Color(description: "Color \(colorsCount)", rValue: r, gValue: g, bValue: b, aValue: a, dateTaken: Date())
-        manipulator.saveColor(color: colorToSave)
+        let colorToSave = Color(title: "Color \(colorsCount)", rValue: r, gValue: g, bValue: b, aValue: a, dateTaken: Date())
+        manipulator.saveColor(color: colorToSave, mode: .standalone)
         showNotification(text: "Color saved", mode: .regular)
     }
     //MARK: - removing color preview on user action
