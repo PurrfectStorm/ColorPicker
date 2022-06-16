@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ColorPreview: UIView {
+final class ColorPreview: UIView {
     
     var isOnScreen = false
     
@@ -22,7 +22,7 @@ class ColorPreview: UIView {
     lazy var icon: UIImageView = {
         let container = UIImageView()
         container.translatesAutoresizingMaskIntoConstraints = false
-        let image = UIImage(systemName: "eyedropper")
+        let image = (ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.circle") : UIImage(systemName: "pencil.tip.crop.circle.badge.plus"))
         container.image = image
         container.alpha = 0.5
         return container

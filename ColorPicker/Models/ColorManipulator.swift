@@ -8,16 +8,18 @@
 import Foundation
 //MARK: - An entity to store, change and delete colors and sets
 
-enum OperatingMode {
-    case standalone
-    case setEditing (Int)
+enum OperatingMode: Equatable {
+    case regularPicking
+    case setEditing (setIndex: Int)
 }
 
 struct ColorManipulator {
     
+    static var operatingMode: OperatingMode = .regularPicking
+    
     var savedColors: [Color] {
         get {
-            //TODO: - why is this setter being called repeatedly so many times while accessing this var?
+            //TODO: - why is this getter being called repeatedly so many times while accessing this var?
             return restoreColorsFromUD()
         }
         set {
@@ -34,36 +36,35 @@ struct ColorManipulator {
         }
     }
     //MARK: - Color operations
-    mutating func saveColor(color: Color, mode: OperatingMode) {
-        switch mode {
-        case .standalone: savedColors.append(color)
-        case .setEditing(let position):
-            var setToUpdate = savedColorSets[position]
-            setToUpdate.colors.append(color)
+    mutating func saveColor(color: Color) {
+        switch ColorManipulator.operatingMode {
+        case .regularPicking: savedColors.append(color)
+        case .setEditing(let index):
+            savedColorSets[index].colors.append(color)
         }
     }
     
-    mutating func deleteColor(position: Int, mode: OperatingMode) {
-        switch mode {
-        case .standalone:
+    mutating func deleteColor(position: Int) {
+        switch ColorManipulator.operatingMode {
+        case .regularPicking:
             if savedColors.count > 0 && position < savedColors.count {
                 savedColors.remove(at: position)
             }
         case .setEditing(let index):
-            var setToUpdate = savedColorSets[index]
-            setToUpdate.colors.remove(at: position)
+            savedColorSets[index].colors.remove(at: position)
         }
     }
     
-    mutating func renameColor(name: String, position: Int, mode: OperatingMode) {
-        switch mode {
-        case .standalone:
+    mutating func renameColor(name: String, position: Int) {
+        switch ColorManipulator.operatingMode {
+        case .regularPicking:
             if savedColors.count > 0 && position < savedColors.count {
                 savedColors[position].title = name
             }
         case .setEditing(let index):
-            var setToUpdate = savedColorSets[index]
-            setToUpdate.colors[position].title = name
+            if savedColorSets.count > 0 && position < savedColorSets.count {
+                savedColorSets[index].colors[position].title = name
+            }
         }
     }
     
@@ -83,8 +84,12 @@ struct ColorManipulator {
             savedColorSets[position].title = name
         }
     }
-    
     //MARK: - Storage management
+    
+    mutating func deleteAllData() {
+        savedColors.removeAll()
+        savedColorSets.removeAll()
+    }
     
     private func synchronizeColorsWithUD(colors: [Color]) {
         let defaults = UserDefaults.standard

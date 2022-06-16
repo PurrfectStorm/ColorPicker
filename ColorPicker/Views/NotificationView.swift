@@ -14,7 +14,7 @@ enum NotificationType {
     case error
 }
 
-class NotificationLabel: UILabel {
+final class NotificationLabel: UILabel {
     init(text:String, type: NotificationType) {
         super.init(frame: .zero)
         self.translatesAutoresizingMaskIntoConstraints = false

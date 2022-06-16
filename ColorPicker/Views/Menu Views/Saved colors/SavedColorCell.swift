@@ -8,7 +8,7 @@
 import UIKit
 
 //MARK: - basic cell representing a single saved color
-class SavedColorCell: UITableViewCell {
+final class SavedColorCell: UITableViewCell {
     
     static let identifier = "ColorCell"
     
@@ -61,17 +61,17 @@ class SavedColorCell: UITableViewCell {
     
     private func setupLayout() {
         NSLayoutConstraint.activate([
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            
             preview.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            preview.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            preview.trailingAnchor.constraint(equalTo: hexDescription.leadingAnchor, constant: -5),
             preview.widthAnchor.constraint(equalToConstant: 40),
             preview.heightAnchor.constraint(equalToConstant: 40),
             
             dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             dateLabel.widthAnchor.constraint(equalToConstant: 150),
-            
-            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: preview.trailingAnchor, constant: 10),
             
             hexDescription.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             hexDescription.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),

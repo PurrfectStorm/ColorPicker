@@ -8,7 +8,7 @@
 import UIKit
 import PhotosUI
 
-class MainScreenViewController: UIViewController, CPImagePresenter {
+final class MainScreenViewController: UIViewController, CPImagePresenter {
     
     //MARK: - Setting initial variables
     private(set) lazy var provider = ImageProvider(presenter: self)
@@ -147,7 +147,7 @@ class MainScreenViewController: UIViewController, CPImagePresenter {
         setupViews()
         setupLayout()
     }
-    //MARK: - Primary function of this VC is showing images
+    
     func show(image: UIImage) {
         removeColorPreview()
         imageToShow = image
@@ -236,9 +236,15 @@ class MainScreenViewController: UIViewController, CPImagePresenter {
         let g = Float(components[1])
         let b = Float(components[2])
         let a = Float(components[3])
-        let colorsCount = manipulator.savedColors.count
+        var colorsCount: Int
+        switch ColorManipulator.operatingMode {
+        case .regularPicking:
+            colorsCount = manipulator.savedColors.count
+        case .setEditing(let index):
+            colorsCount = manipulator.savedColorSets[index].colors.count
+        }
         let colorToSave = Color(title: "Color \(colorsCount)", rValue: r, gValue: g, bValue: b, aValue: a, dateTaken: Date())
-        manipulator.saveColor(color: colorToSave, mode: .standalone)
+        manipulator.saveColor(color: colorToSave)
         showNotification(text: "Color saved", mode: .regular)
     }
     //MARK: - removing color preview on user action

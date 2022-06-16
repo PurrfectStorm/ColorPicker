@@ -98,10 +98,8 @@
 			isa = PBXGroup;
 			children = (
 				ECD334C127C1705A00C5E86E /* Menu.swift */,
-				EC69F77F27C24E3B003C7524 /* SavedColors.swift */,
-				EC13F4842857525D009ADDFC /* SavedColorSets.swift */,
-				ECC4945827C2A4B900C1DC55 /* SavedColorCell.swift */,
-				EC13F48628575351009ADDFC /* SavedColorSetCell.swift */,
+				ECEFD9AF285804A500A74033 /* Saved colors */,
+				ECEFD9B0285804C500A74033 /* Saved color sets */,
 			);
 			path = "Menu Views";
 			sourceTree = "<group>";
@@ -125,6 +123,24 @@
 				EC69F77E27C24E1B003C7524 /* Menu Views */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		ECEFD9AF285804A500A74033 /* Saved colors */ = {
+			isa = PBXGroup;
+			children = (
+				EC69F77F27C24E3B003C7524 /* SavedColors.swift */,
+				ECC4945827C2A4B900C1DC55 /* SavedColorCell.swift */,
+			);
+			path = "Saved colors";
+			sourceTree = "<group>";
+		};
+		ECEFD9B0285804C500A74033 /* Saved color sets */ = {
+			isa = PBXGroup;
+			children = (
+				EC13F4842857525D009ADDFC /* SavedColorSets.swift */,
+				EC13F48628575351009ADDFC /* SavedColorSetCell.swift */,
+			);
+			path = "Saved color sets";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

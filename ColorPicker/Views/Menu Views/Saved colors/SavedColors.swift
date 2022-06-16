@@ -8,13 +8,12 @@
 import UIKit
 
 //MARK: - saved colors submenu list
-class ColorsViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
+final class ColorsViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     private lazy var manipulator = ColorManipulator()
     
     private var cellPositionForRenaming: Int?
-    private var mode: OperatingMode
-    
+
     private lazy var colorsTV: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -33,22 +32,13 @@ class ColorsViewController : UIViewController, UITableViewDelegate, UITableViewD
                 return
             }
             if let newPosition = self?.cellPositionForRenaming {
-                self?.manipulator.renameColor(name: newName, position: newPosition, mode: self!.mode)
+                self?.manipulator.renameColor(name: newName, position: newPosition)
                 self?.colorsTV.reloadData()
             }
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .destructive, handler: nil))
         alert.addTextField()
         return alert
-    }
-    
-    init(mode:OperatingMode) {
-        self.mode = mode
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -67,20 +57,31 @@ class ColorsViewController : UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return manipulator.savedColors.count
+        switch ColorManipulator.operatingMode {
+        case .regularPicking:
+            return manipulator.savedColors.count
+        case .setEditing(let index):
+            return manipulator.savedColorSets[index].colors.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SavedColorCell.identifier, for: indexPath) as? SavedColorCell else {
             return UITableViewCell()
         }
-        cell.configure(color: manipulator.savedColors[indexPath.row])
-        return cell
+        switch ColorManipulator.operatingMode {
+        case .regularPicking:
+            cell.configure(color: manipulator.savedColors[indexPath.row])
+            return cell
+        case .setEditing(let index):
+            cell.configure(color: manipulator.savedColorSets[index].colors[indexPath.row])
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            manipulator.deleteColor(position: indexPath.row, mode: mode)
+            manipulator.deleteColor(position: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.reloadData()
         }

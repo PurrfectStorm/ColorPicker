@@ -13,7 +13,7 @@ enum ImageCreatingMode {
     case gallery
 }
 
-class ImageProvider {
+final class ImageProvider {
     
     var outputImage: UIImage?
     
