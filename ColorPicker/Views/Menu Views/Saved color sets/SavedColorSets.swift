@@ -68,7 +68,7 @@ final class ColorSetsViewController: UIViewController, UITableViewDelegate, UITa
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SavedColorSetCell.identifier, for: indexPath) as? SavedColorSetCell else {
             return UITableViewCell()
         }
-        cell.configure(set: manipulator.savedColorSets[indexPath.row])
+        cell.configure(cSet: manipulator.savedColorSets[indexPath.row])
         return cell
     }
     

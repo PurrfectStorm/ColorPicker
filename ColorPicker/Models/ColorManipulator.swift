@@ -51,7 +51,9 @@ struct ColorManipulator {
                 savedColors.remove(at: position)
             }
         case .setEditing(let index):
-            savedColorSets[index].colors.remove(at: position)
+            if savedColorSets[index].colors.count > 0 && position < savedColorSets[index].colors.count {
+                savedColorSets[index].colors.remove(at: position)
+            }
         }
     }
     
@@ -62,7 +64,7 @@ struct ColorManipulator {
                 savedColors[position].title = name
             }
         case .setEditing(let index):
-            if savedColorSets.count > 0 && position < savedColorSets.count {
+            if savedColorSets[index].colors.count > 0 && position < savedColorSets[index].colors.count {
                 savedColorSets[index].colors[position].title = name
             }
         }

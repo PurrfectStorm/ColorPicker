@@ -76,8 +76,8 @@ final class SavedColorSetCell: UITableViewCell {
         ])
     }
     
-    func configure(set: ColorSet) {
-        let colorsSlice = Array(set.colors.prefix(3))
+    func configure(cSet: ColorSet) {
+        let colorsSlice = Array(cSet.colors.prefix(3))
         for color in colorsSlice {
             let colorToShow = UIColor(red: CGFloat(color.rValue),
                                       green: CGFloat(color.gValue),
@@ -96,8 +96,8 @@ final class SavedColorSetCell: UITableViewCell {
         }
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, h:mm a"
-        dateLabel.text = "Taken \(formatter.string(from: set.dateCreated))"
-        titleLabel.text = set.title
+        dateLabel.text = "Taken \(formatter.string(from: cSet.dateCreated))"
+        titleLabel.text = cSet.title
     }
     
 }

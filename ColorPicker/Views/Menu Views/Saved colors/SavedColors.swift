@@ -24,13 +24,9 @@ final class ColorsViewController : UIViewController, UITableViewDelegate, UITabl
     private var alert: UIAlertController {
         let alert = UIAlertController(title: "Rename color", message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { [weak self] _ in
-            guard let fields = alert.textFields else {
-                return
-            }
+            guard let fields = alert.textFields else { return }
             let nameField = fields[0]
-            guard let newName = nameField.text, !newName.isEmpty else {
-                return
-            }
+            guard let newName = nameField.text, !newName.isEmpty else { return }
             if let newPosition = self?.cellPositionForRenaming {
                 self?.manipulator.renameColor(name: newName, position: newPosition)
                 self?.colorsTV.reloadData()
