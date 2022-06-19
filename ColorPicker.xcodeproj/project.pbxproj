@@ -82,16 +82,24 @@
 			children = (
 				EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */,
 				EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */,
+				EC1AA9D22794EFEF001C3BBE /* Extensions.swift */,
 				EC90E36127B87AF400BFA89F /* Views */,
 				EC6FBF6D27B9960D009E6055 /* Models */,
-				EC1AA9D22794EFEF001C3BBE /* Extensions.swift */,
+				EC5E080A285F5F9B008418D3 /* Common */,
+				EC08E708276BD9E2007E32D4 /* Info.plist */,
+			);
+			path = ColorPicker;
+			sourceTree = "<group>";
+		};
+		EC5E080A285F5F9B008418D3 /* Common */ = {
+			isa = PBXGroup;
+			children = (
 				EC08E700276BD9E1007E32D4 /* Main.storyboard */,
 				EC08E703276BD9E2007E32D4 /* Assets.xcassets */,
 				EC08E705276BD9E2007E32D4 /* LaunchScreen.storyboard */,
 				EC81E8FC2774A76300388BED /* test.jpg */,
-				EC08E708276BD9E2007E32D4 /* Info.plist */,
 			);
-			path = ColorPicker;
+			path = Common;
 			sourceTree = "<group>";
 		};
 		EC69F77E27C24E1B003C7524 /* Menu Views */ = {

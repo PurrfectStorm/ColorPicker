@@ -13,7 +13,7 @@ final class ColorsViewController : UIViewController, UITableViewDelegate, UITabl
     private lazy var manipulator = ColorManipulator()
     
     private var cellPositionForRenaming: Int?
-
+    
     private lazy var colorsTV: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -85,6 +85,21 @@ final class ColorsViewController : UIViewController, UITableViewDelegate, UITabl
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
+    }
+    
+    // MARK: - User intents
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //put the value of cell hex color label into pasteboard
+        let cell = tableView.cellForRow(at: indexPath) as! SavedColorCell
+        UIPasteboard.general.string = String(cell.hexDescription.text!.dropFirst(10))
+        //show a feedback to the user
+        cell.hexDescription.text = "Copied!"
+        cell.hexDescription.textColor = .systemGreen
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            cell.hexDescription.textColor = .label
+            tableView.reloadRows(at: [indexPath], with: .none)
+        }
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     @objc private func longPressToRename (sender: UILongPressGestureRecognizer) {

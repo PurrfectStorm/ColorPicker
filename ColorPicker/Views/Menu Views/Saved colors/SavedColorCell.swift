@@ -26,7 +26,7 @@ final class SavedColorCell: UITableViewCell {
         return label
     }()
     
-    private lazy var  hexDescription: UILabel = {
+    lazy var  hexDescription: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 18)
         label.textAlignment = .right

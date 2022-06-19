@@ -41,7 +41,6 @@ final class ColorSetsViewController: UIViewController, UITableViewDelegate, UITa
     }
     
     deinit {
-        print("deiniting set")
         ColorManipulator.operatingMode = .regularPicking
     }
     
@@ -69,6 +68,7 @@ final class ColorSetsViewController: UIViewController, UITableViewDelegate, UITa
             return UITableViewCell()
         }
         cell.configure(cSet: manipulator.savedColorSets[indexPath.row])
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
     

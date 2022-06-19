@@ -199,6 +199,7 @@ final class MainScreenViewController: UIViewController, CPImagePresenter {
         let menuVC = MenuViewController()
         menuVC.title = "Menu"
         let navVC = UINavigationController(rootViewController: menuVC)
+        removeColorPreview()
         present(navVC, animated: true)
     }
     //checking input coordinates to prevent color preview appearing offscreen

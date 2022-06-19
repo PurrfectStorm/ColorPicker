@@ -10,7 +10,7 @@ import UIKit
 final class SavedColorSetCell: UITableViewCell {
     
     static let identifier = "ColorSetCell"
-
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -26,7 +26,7 @@ final class SavedColorSetCell: UITableViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-       
+    
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 12)
@@ -34,15 +34,15 @@ final class SavedColorSetCell: UITableViewCell {
         label.textAlignment = .right
         return label
     }()
-//
-//    private lazy var editButton: UIButton = {
-//        let button = UIButton()
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
-//        button.isUserInteractionEnabled = true
-////        button.addTarget(self, action: #selector(), for: .touchUpInside)
-//        return button
-//    }()
+    //
+    //    private lazy var editButton: UIButton = {
+    //        let button = UIButton()
+    //        button.translatesAutoresizingMaskIntoConstraints = false
+    //        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+    //        button.isUserInteractionEnabled = true
+    //        button.addTarget(self, action: #selector(), for: .touchUpInside)
+    //        return button
+    //    }()
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -57,13 +57,12 @@ final class SavedColorSetCell: UITableViewCell {
         contentView.addSubview(previewsStackView)
         contentView.addSubview(dateLabel)
         contentView.addSubview(titleLabel)
-//        contentView.addSubview(editButton)
+        //        contentView.addSubview(editButton)
         setupLayout()
     }
     
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             
@@ -77,6 +76,7 @@ final class SavedColorSetCell: UITableViewCell {
     }
     
     func configure(cSet: ColorSet) {
+        previewsStackView.removeAllArrangedSubviews()
         let colorsSlice = Array(cSet.colors.prefix(3))
         for color in colorsSlice {
             let colorToShow = UIColor(red: CGFloat(color.rValue),
@@ -99,5 +99,4 @@ final class SavedColorSetCell: UITableViewCell {
         dateLabel.text = "Taken \(formatter.string(from: cSet.dateCreated))"
         titleLabel.text = cSet.title
     }
-    
 }
