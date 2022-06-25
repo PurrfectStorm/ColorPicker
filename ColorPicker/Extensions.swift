@@ -50,12 +50,6 @@ extension UIColor {
         return String(format: "%02lX%02lX%02lX", lroundf(r * 255), lroundf(g * 255), lroundf(b * 255))
     }
 }
-// MARK: - ScrollView extension
-extension MainScreenViewController: UIScrollViewDelegate {
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return mainImage
-    }
-}
 // MARK: - Photopicker extensions to choose photos from camera and gallery
 
 //TODO: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but in fact rotated into landscape bitwise rendering getPixelColor method useless

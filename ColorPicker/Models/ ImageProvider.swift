@@ -12,6 +12,7 @@ enum ImageCreatingMode {
     case camera
     case gallery
 }
+//MARK: - Needs huge refactoring
 
 final class ImageProvider {
     

@@ -8,7 +8,7 @@
 import UIKit
 import PhotosUI
 
-final class MainScreenViewController: UIViewController, CPImagePresenter {
+final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CPImagePresenter {
     
     //MARK: - Setting initial variables
     private(set) lazy var provider = ImageProvider(presenter: self)
@@ -18,14 +18,16 @@ final class MainScreenViewController: UIViewController, CPImagePresenter {
     private var colorPreview = ColorPreview()
     
     private var imageToShow: UIImage? {
-        willSet {
-            mainImage.image = newValue
+        get {
+            return mainImage.image
         }
-        didSet {
-            updateScrollViewContentSize()
-            imageScrollView.minimumZoomScale = view.frame.width/imageToShow!.size.width
-            imageScrollView.maximumZoomScale = imageScrollView.minimumZoomScale*5
-            resizeOnDoubleTap()
+        set {
+            mainImage.image = newValue
+            let size = newValue?.size ?? CGSize.zero
+            mainImage.frame = CGRect(origin: .zero, size: size)
+            setZoomScale()
+            imageScrollView.contentSize = CGSize(width: size.width * imageScrollView.minimumZoomScale, height: size.height * imageScrollView.minimumZoomScale)
+            centerImageOnZoom()
         }
     }
     
@@ -93,6 +95,7 @@ final class MainScreenViewController: UIViewController, CPImagePresenter {
     
     //MARK: - Views setup and layout
     private func setupViews() {
+        view.backgroundColor = .lightGray
         bottomButtonsStackView.addArrangedSubview(menuButton)
         bottomButtonsStackView.addArrangedSubview(cameraButton)
         bottomButtonsStackView.addArrangedSubview(galleryButton)
@@ -106,7 +109,6 @@ final class MainScreenViewController: UIViewController, CPImagePresenter {
         imageScrollView.addGestureRecognizer(doubleTapRecognizer)
         view.addSubview(imageScrollView)
         imageScrollView.addSubview(mainImage)
-        updateScrollViewContentSize()
         view.addSubview(bottomButtonsStackView)
     }
     private func setupLayout() {
@@ -137,21 +139,38 @@ final class MainScreenViewController: UIViewController, CPImagePresenter {
         ]
         NSLayoutConstraint.activate(constraints)
     }
-    private func updateScrollViewContentSize(){
-        if let safeSize = mainImage.image?.size {
-            imageScrollView.contentSize = safeSize
-        }
-    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupLayout()
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        centerImageOnZoom()
+    }
+    
     func show(image: UIImage) {
+        mainImage.image = nil
         removeColorPreview()
         imageToShow = image
     }
+    
+    private func setZoomScale() {
+        let xScale = imageScrollView.bounds.width/(imageToShow?.size.width ?? 1)
+        let yScale = imageScrollView.bounds.height/(imageToShow?.size.height ?? 1)
+        imageScrollView.minimumZoomScale = min(xScale, yScale)
+        imageScrollView.maximumZoomScale = 5 * imageScrollView.minimumZoomScale
+        imageScrollView.zoomScale = imageScrollView.minimumZoomScale
+    }
+    
+    private func centerImageOnZoom() {
+        let offsetX = max((imageScrollView.bounds.width - imageScrollView.contentSize.width) * 0.5, 0)
+        let offsetY = max((imageScrollView.bounds.height - imageScrollView.contentSize.height) * 0.5, 0)
+        imageScrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
+    }
+
     //MARK: - User intents
     
     //MARK: paste photo from clipboard
@@ -279,5 +298,14 @@ final class MainScreenViewController: UIViewController, CPImagePresenter {
             notification.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
-}
+    
+    // MARK: - UIScrollviewDelegate methods
 
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return mainImage
+    }
+
+    func scrollViewDidZoom(_ scrollView: UIScrollView) {
+        centerImageOnZoom()
+    }
+}
