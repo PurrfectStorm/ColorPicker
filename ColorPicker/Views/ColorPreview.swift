@@ -82,4 +82,3 @@ final class ColorPreview: UIView {
         return true //they say this shit is important to override, need to run some tests on it
     }
 }
-

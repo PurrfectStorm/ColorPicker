@@ -16,6 +16,7 @@
 		EC13F4852857525D009ADDFC /* SavedColorSets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC13F4842857525D009ADDFC /* SavedColorSets.swift */; };
 		EC13F48728575351009ADDFC /* SavedColorSetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC13F48628575351009ADDFC /* SavedColorSetCell.swift */; };
 		EC1AA9D32794EFEF001C3BBE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1AA9D22794EFEF001C3BBE /* Extensions.swift */; };
+		EC53EDE02867BB4300698A75 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC53EDDF2867BB4300698A75 /* StorageManager.swift */; };
 		EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC569BF4277B9B5600874753 /*  ImageProvider.swift */; };
 		EC69F78027C24E3B003C7524 /* SavedColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC69F77F27C24E3B003C7524 /* SavedColors.swift */; };
 		EC6FBF6C27B989A7009E6055 /* ColorPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC6FBF6B27B989A7009E6055 /* ColorPreview.swift */; };
@@ -39,6 +40,7 @@
 		EC13F4842857525D009ADDFC /* SavedColorSets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColorSets.swift; sourceTree = "<group>"; };
 		EC13F48628575351009ADDFC /* SavedColorSetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColorSetCell.swift; sourceTree = "<group>"; };
 		EC1AA9D22794EFEF001C3BBE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		EC53EDDF2867BB4300698A75 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		EC569BF4277B9B5600874753 /*  ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " ImageProvider.swift"; sourceTree = "<group>"; };
 		EC69F77F27C24E3B003C7524 /* SavedColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColors.swift; sourceTree = "<group>"; };
 		EC6FBF6B27B989A7009E6055 /* ColorPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPreview.swift; sourceTree = "<group>"; };
@@ -80,20 +82,31 @@
 		EC08E6F9276BD9E1007E32D4 /* ColorPicker */ = {
 			isa = PBXGroup;
 			children = (
-				EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */,
-				EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */,
 				EC1AA9D22794EFEF001C3BBE /* Extensions.swift */,
-				EC90E36127B87AF400BFA89F /* Views */,
 				EC6FBF6D27B9960D009E6055 /* Models */,
+				EC90E36127B87AF400BFA89F /* Views */,
+				EC122E212868FC1D001BFCA2 /* Services */,
 				EC5E080A285F5F9B008418D3 /* Common */,
 				EC08E708276BD9E2007E32D4 /* Info.plist */,
 			);
 			path = ColorPicker;
 			sourceTree = "<group>";
 		};
+		EC122E212868FC1D001BFCA2 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				EC569BF4277B9B5600874753 /*  ImageProvider.swift */,
+				EC53EDDF2867BB4300698A75 /* StorageManager.swift */,
+				ECCD795E27C0269A0018A7DC /* ColorManipulator.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		EC5E080A285F5F9B008418D3 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				EC08E6FA276BD9E1007E32D4 /* AppDelegate.swift */,
+				EC08E6FC276BD9E1007E32D4 /* SceneDelegate.swift */,
 				EC08E700276BD9E1007E32D4 /* Main.storyboard */,
 				EC08E703276BD9E2007E32D4 /* Assets.xcassets */,
 				EC08E705276BD9E2007E32D4 /* LaunchScreen.storyboard */,
@@ -115,9 +128,7 @@
 		EC6FBF6D27B9960D009E6055 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EC569BF4277B9B5600874753 /*  ImageProvider.swift */,
 				ECC6207227BEF91C0087F595 /* ColorModel.swift */,
-				ECCD795E27C0269A0018A7DC /* ColorManipulator.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -235,6 +246,7 @@
 				EC08E6FD276BD9E1007E32D4 /* SceneDelegate.swift in Sources */,
 				ECCD795F27C0269A0018A7DC /* ColorManipulator.swift in Sources */,
 				EC69F78027C24E3B003C7524 /* SavedColors.swift in Sources */,
+				EC53EDE02867BB4300698A75 /* StorageManager.swift in Sources */,
 				EC13F48728575351009ADDFC /* SavedColorSetCell.swift in Sources */,
 				EC90E36327B87B1300BFA89F /* NotificationView.swift in Sources */,
 			);

@@ -40,9 +40,6 @@ final class ColorSetsViewController: UIViewController, UITableViewDelegate, UITa
         return alert
     }
     
-    deinit {
-        ColorManipulator.operatingMode = .regularPicking
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +64,16 @@ final class ColorSetsViewController: UIViewController, UITableViewDelegate, UITa
         guard let cell = tableView.dequeueReusableCell(withIdentifier: SavedColorSetCell.identifier, for: indexPath) as? SavedColorSetCell else {
             return UITableViewCell()
         }
+        cell.addToSetButtonTapHandler = { [weak self] in
+            //enable set editing mode
+            ColorManipulator.operatingMode = .setEditing(setIndex: indexPath.row)
+            //tell main VC to put cached photo on main screen
+            if let vc = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController as? MainScreenViewController {
+                vc.showCachedPhoto(named: (self?.manipulator.savedColorSets[indexPath.row].source)!)
+            }
+            //dismiss menu
+            self?.navigationController?.dismiss(animated: true)
+        }
         cell.configure(cSet: manipulator.savedColorSets[indexPath.row])
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -74,6 +81,7 @@ final class ColorSetsViewController: UIViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
+            StorageManager.shared.deleteFromCache(fileName: manipulator.savedColorSets[indexPath.row].source)
             manipulator.deleteColorSet(position: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
             tableView.reloadData()

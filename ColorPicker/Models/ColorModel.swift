@@ -19,6 +19,6 @@ struct Color: Codable {
 struct ColorSet: Codable {
     var title: String
     var colors: [Color]
-    let source: String?
+    let source: String
     let dateCreated: Date
 }

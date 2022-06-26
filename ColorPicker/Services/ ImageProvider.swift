@@ -11,6 +11,7 @@ enum ImageCreatingMode {
     case clipboard
     case camera
     case gallery
+    case cache(fileName:String)
 }
 //MARK: - Needs huge refactoring
 
@@ -68,6 +69,11 @@ final class ImageProvider {
             else {
                 presenter?.showNotification(text: "Camera import: something went wrong, try again", mode: .error)
             }
+        case .cache(let fileName):
+            let imageData = StorageManager.shared.restoreFromCache(named: fileName)
+            self.outputImage = UIImage(data: imageData)
+            self.presenter?.showNotification(text: "Restored from cache", mode: .regular)
+            self.presenter?.show(image: (self.outputImage)!)
         }
     }
 } 

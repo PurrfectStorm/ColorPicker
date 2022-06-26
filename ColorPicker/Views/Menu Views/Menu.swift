@@ -20,6 +20,8 @@ fileprivate struct MenuItem {
 //MARK: - root menu view controller
 final class MenuViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    var imageToSave: UIImage?
+    
     private var manipulator = ColorManipulator()
     
     private var menuModel:[MenuSection] = []
@@ -30,6 +32,14 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
         return tableView
     }()
     
+    private func getSetSource() -> String {
+        //give a unique id to it
+        let id = UUID().uuidString
+        //tell storage service to cache it
+        StorageManager.shared.cachePhoto(data: imageToSave?.pngData() ?? Data(), name: id)
+        return id
+    }
+    
     private func populateModel() {
         var setCreationDescription: String {
             return (ColorManipulator.operatingMode == .regularPicking ? "New color set from current photo" : "Stop adding colors to current set")
@@ -38,7 +48,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
                                                                          handler: { [weak self] in
             if ColorManipulator.operatingMode == .regularPicking {
                 //create an empty color set
-                self?.manipulator.saveColorSet(set: ColorSet(title: "New set", colors: [], source: nil, dateCreated: Date()))
+                self?.manipulator.saveColorSet(set: ColorSet(title: "New set", colors: [], source: self?.getSetSource() ?? "none", dateCreated: Date()))
                 //tell manipulator we are in set adding mode now
                 ColorManipulator.operatingMode = .setEditing(setIndex: (self?.manipulator.savedColorSets.count)! - 1)
                 self?.dismiss(animated: true)

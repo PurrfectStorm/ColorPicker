@@ -195,6 +195,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         galleryPhotoPicker.delegate = self
         self.present(galleryPhotoPicker, animated: true)
     }
+    //MARK: restore from cache
+    func showCachedPhoto(named: String) {
+        removeColorPreview()
+        provider.makeImage(.cache(fileName: named))
+    }
     //MARK: pick a color from photo
     @objc private func pointTapped(_ sender:UITapGestureRecognizer) {
         let xPosition = sender.location(in: view).x
@@ -219,7 +224,9 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         menuVC.title = "Menu"
         let navVC = UINavigationController(rootViewController: menuVC)
         removeColorPreview()
-        present(navVC, animated: true)
+        present(navVC,animated: true) { [weak self] in
+            menuVC.imageToSave = self?.mainImage.image //ugly but working
+        }
     }
     //checking input coordinates to prevent color preview appearing offscreen
     private func calculateAdjustedPosition(originX: CGFloat, originY: CGFloat) -> (x:CGFloat, y:CGFloat){

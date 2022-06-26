@@ -6,7 +6,7 @@
 //
 
 import Foundation
-//MARK: - An entity to store, change and delete colors and sets
+//MARK: - An entity to edit colors and sets
 
 enum OperatingMode: Equatable {
     case regularPicking
@@ -19,20 +19,19 @@ struct ColorManipulator {
     
     var savedColors: [Color] {
         get {
-            //TODO: - why is this getter being called repeatedly so many times while accessing this var?
-            return restoreColorsFromUD()
+            return StorageManager.shared.restoreColorsFromUD()
         }
         set {
-            synchronizeColorsWithUD(colors: newValue)
+            StorageManager.shared.synchronizeColorsWithUD(colors: newValue)
         }
     }
     
     var savedColorSets: [ColorSet] {
         get {
-            return restoreColorSetsFromUD()
+            return StorageManager.shared.restoreColorSetsFromUD()
         }
         set {
-            synchronizeColorSetsWithUD(sets: newValue)
+            StorageManager.shared.synchronizeColorSetsWithUD(sets: newValue)
         }
     }
     //MARK: - Color operations
@@ -86,50 +85,8 @@ struct ColorManipulator {
             savedColorSets[position].title = name
         }
     }
-    //MARK: - Storage management
     
     mutating func deleteAllData() {
-        savedColors.removeAll()
-        savedColorSets.removeAll()
-    }
-    
-    private func synchronizeColorsWithUD(colors: [Color]) {
-        let defaults = UserDefaults.standard
-        let encodedColors = try? JSONEncoder().encode(colors)
-        defaults.set(encodedColors, forKey: "SavedColors")
-        defaults.synchronize()
-    }
-    
-    private func restoreColorsFromUD() -> [Color] {
-        let defaults = UserDefaults.standard
-        if let decoded  = defaults.data(forKey: "SavedColors") {
-            if let decodedData = try? JSONDecoder().decode([Color].self, from: decoded) {
-                return decodedData
-            } else {
-                return []
-            }
-        } else {
-            return []
-        }
-    }
-    
-    private func synchronizeColorSetsWithUD(sets: [ColorSet]) {
-        let defaults = UserDefaults.standard
-        let encodedColors = try? JSONEncoder().encode(sets)
-        defaults.set(encodedColors, forKey: "SavedColorSets")
-        defaults.synchronize()
-    }
-    
-    private func restoreColorSetsFromUD() -> [ColorSet] {
-        let defaults = UserDefaults.standard
-        if let decoded  = defaults.data(forKey: "SavedColorSets") {
-            if let decodedData = try? JSONDecoder().decode([ColorSet].self, from: decoded) {
-                return decodedData
-            } else {
-                return []
-            }
-        } else {
-            return []
-        }
+        StorageManager.shared.deleteAllData()
     }
 }

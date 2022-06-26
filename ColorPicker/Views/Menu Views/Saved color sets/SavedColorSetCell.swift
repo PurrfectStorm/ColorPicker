@@ -34,15 +34,17 @@ final class SavedColorSetCell: UITableViewCell {
         label.textAlignment = .right
         return label
     }()
-    //
-    //    private lazy var editButton: UIButton = {
-    //        let button = UIButton()
-    //        button.translatesAutoresizingMaskIntoConstraints = false
-    //        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
-    //        button.isUserInteractionEnabled = true
-    //        button.addTarget(self, action: #selector(), for: .touchUpInside)
-    //        return button
-    //    }()
+    
+    private lazy var editButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "plus.circle"), for: .normal)
+        button.isUserInteractionEnabled = true
+        button.addTarget(nil, action: #selector(continueSetEditing), for: .touchUpInside)
+        return button
+    }()
+    
+    var addToSetButtonTapHandler:(()->Void)?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -57,7 +59,7 @@ final class SavedColorSetCell: UITableViewCell {
         contentView.addSubview(previewsStackView)
         contentView.addSubview(dateLabel)
         contentView.addSubview(titleLabel)
-        //        contentView.addSubview(editButton)
+        contentView.addSubview(editButton)
         setupLayout()
     }
     
@@ -72,6 +74,11 @@ final class SavedColorSetCell: UITableViewCell {
             dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
             dateLabel.widthAnchor.constraint(equalToConstant: 150),
+            
+            editButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
+            editButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
+            editButton.widthAnchor.constraint(equalToConstant: 30),
+            editButton.heightAnchor.constraint(equalToConstant: 30),
         ])
     }
     
@@ -98,5 +105,9 @@ final class SavedColorSetCell: UITableViewCell {
         formatter.dateFormat = "MMM d, h:mm a"
         dateLabel.text = "Taken \(formatter.string(from: cSet.dateCreated))"
         titleLabel.text = cSet.title
+    }
+    
+    @objc func continueSetEditing() {
+        addToSetButtonTapHandler!()
     }
 }
