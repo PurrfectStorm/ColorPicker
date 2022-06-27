@@ -151,10 +151,10 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         centerImageOnZoom()
     }
     
-    func show(image: UIImage) {
+    func show(imageData: Data) {
         mainImage.image = nil
         removeColorPreview()
-        imageToShow = image
+        imageToShow = UIImage(data: imageData)
     }
     
     private func setZoomScale() {

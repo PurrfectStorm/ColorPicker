@@ -10,7 +10,7 @@ import PhotosUI
 
 
 protocol CPImagePresenter: AnyObject {
-    func show(image: UIImage)
+    func show(imageData: Data)
     func showNotification(text: String, mode: NotificationType)
 }
 
@@ -52,13 +52,13 @@ extension UIColor {
 }
 // MARK: - Photopicker extensions to choose photos from camera and gallery
 
-//TODO: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but in fact rotated into landscape bitwise rendering getPixelColor method useless
+//done: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but in fact rotated into landscape bitwise rendering getPixelColor method useless
 extension MainScreenViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
                 guard let image = reading as? UIImage, error == nil else {return}
-                self?.provider.outputImage = image
+                self?.provider.outputImageData = image.pngData()
             }
         }
         picker.dismiss(animated: true, completion: {
@@ -72,7 +72,15 @@ extension MainScreenViewController: UIImagePickerControllerDelegate, UINavigatio
     }
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
-        self.provider.outputImage = image
+        switch image.imageOrientation.rawValue {
+        case 3: // rotate img 90 clockwise
+            UIGraphicsBeginImageContext(image.size)
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+            let rotatedImg = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+            self.provider.outputImageData = rotatedImg!.pngData()
+        default: self.provider.outputImageData = image.pngData()
+        }
         picker.dismiss(animated: true, completion: {
             self.provider.makeImage(.camera)
         })
