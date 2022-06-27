@@ -37,6 +37,17 @@ extension UIImage {
         let a = CGFloat(pixelData[pixelInfo+3]) / CGFloat(255.0)
         return UIColor(red: r, green: g, blue: b, alpha: a)
     }
+    
+    func rotateImage()-> UIImage?  {
+        if (self.imageOrientation == UIImage.Orientation.up ) {
+            return self
+        }
+        UIGraphicsBeginImageContext(self.size)
+        self.draw(in: CGRect(origin: CGPoint.zero, size: self.size))
+        let copy = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return copy
+    }
 }
 // MARK: - creathng a string representation of hex value of a given UIColor
 extension UIColor {
@@ -51,14 +62,17 @@ extension UIColor {
     }
 }
 // MARK: - Photopicker extensions to choose photos from camera and gallery
-
 //done: investigate strange bug with photos taken in portrait orientation is shown on screen correctly but in fact rotated into landscape bitwise rendering getPixelColor method useless
 extension MainScreenViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
                 guard let image = reading as? UIImage, error == nil else {return}
-                self?.provider.outputImageData = image.pngData()
+                switch image.imageOrientation.rawValue {
+                case 3: // rotate img 90 clockwise
+                    self?.provider.outputImageData = image.rotateImage()?.pngData()
+                default: self?.provider.outputImageData = image.pngData()
+                }
             }
         }
         picker.dismiss(animated: true, completion: {
@@ -66,6 +80,7 @@ extension MainScreenViewController: PHPickerViewControllerDelegate {
         })
     }
 }
+
 extension MainScreenViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true, completion: nil)
@@ -74,11 +89,7 @@ extension MainScreenViewController: UIImagePickerControllerDelegate, UINavigatio
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
         switch image.imageOrientation.rawValue {
         case 3: // rotate img 90 clockwise
-            UIGraphicsBeginImageContext(image.size)
-            image.draw(in: CGRect(origin: .zero, size: image.size))
-            let rotatedImg = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            self.provider.outputImageData = rotatedImg!.pngData()
+            self.provider.outputImageData = image.rotateImage()?.pngData()
         default: self.provider.outputImageData = image.pngData()
         }
         picker.dismiss(animated: true, completion: {
