@@ -86,7 +86,7 @@ struct ColorManipulator {
         }
     }
     
-    mutating func deleteAllData() {
+    func deleteAllData() {
         StorageManager.shared.deleteAllData()
     }
 }

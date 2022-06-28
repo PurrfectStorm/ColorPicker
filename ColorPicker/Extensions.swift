@@ -10,7 +10,7 @@ import PhotosUI
 
 
 protocol CPImagePresenter: AnyObject {
-    func show(imageData: Data)
+    func showImage(imageData: Data)
     func showNotification(text: String, mode: NotificationType)
 }
 
@@ -68,16 +68,18 @@ extension MainScreenViewController: PHPickerViewControllerDelegate {
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
                 guard let image = reading as? UIImage, error == nil else {return}
-                switch image.imageOrientation.rawValue {
-                case 3: // rotate img 90 clockwise
-                    self?.provider.outputImageData = image.rotateImage()?.pngData()
-                default: self?.provider.outputImageData = image.pngData()
+                DispatchQueue.main.async {
+                    switch image.imageOrientation.rawValue {
+                    case 3: // rotate img 90 clockwise
+                        self?.showImage(imageData: (image.rotateImage()?.pngData())!)
+                        self?.showNotification(text: "Pasted item from gallery", mode: .regular)
+                    default: self?.showImage(imageData: (image.pngData())!)
+                        self?.showNotification(text: "Pasted item from gallery", mode: .regular)
+                    }
                 }
             }
         }
-        picker.dismiss(animated: true, completion: {
-            self.provider.makeImage(.gallery)
-        })
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 
@@ -89,12 +91,12 @@ extension MainScreenViewController: UIImagePickerControllerDelegate, UINavigatio
         guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {return}
         switch image.imageOrientation.rawValue {
         case 3: // rotate img 90 clockwise
-            self.provider.outputImageData = image.rotateImage()?.pngData()
-        default: self.provider.outputImageData = image.pngData()
+            self.showImage(imageData: (image.rotateImage()?.pngData())!)
+            self.showNotification(text: "Pasted item from camera", mode: .regular)
+        default: self.showImage(imageData: (image.pngData())!)
+            self.showNotification(text: "Pasted item from camera", mode: .regular)
         }
-        picker.dismiss(animated: true, completion: {
-            self.provider.makeImage(.camera)
-        })
+        picker.dismiss(animated: true, completion: nil)
     }
 }
 

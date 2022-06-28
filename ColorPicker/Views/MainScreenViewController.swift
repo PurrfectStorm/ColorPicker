@@ -151,7 +151,7 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         centerImageOnZoom()
     }
     
-    func show(imageData: Data) {
+    func showImage(imageData: Data) {
         mainImage.image = nil
         removeColorPreview()
         imageToShow = UIImage(data: imageData)
