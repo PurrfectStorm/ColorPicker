@@ -17,6 +17,8 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     
     private var colorPreview = ColorPreview()
     
+    private var isInRegularPickingMode: Bool { ColorManipulator.operatingMode == .regularPicking }
+    
     private var imageToShow: UIImage? {
         get {
             return mainImage.image
@@ -41,7 +43,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     private lazy var cameraButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "camera.shutter.button"), for: .normal)
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        let config = UIImage.SymbolConfiguration(textStyle: .title1)
+        button.setImage(UIImage(systemName: "camera.shutter.button", withConfiguration: config), for: .normal)
         button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(showCamera), for: .touchUpInside)
         return button
@@ -50,7 +56,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     private lazy var galleryButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "photo.on.rectangle.angled"), for: .normal)
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        let config = UIImage.SymbolConfiguration(textStyle: .title1)
+        button.setImage(UIImage(systemName: "photo.on.rectangle.angled", withConfiguration: config), for: .normal)
         button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(showGallery), for: .touchUpInside)
         return button
@@ -58,9 +68,13 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     
     private lazy var menuButton: UIButton = {
         let button = UIButton()
+        button.setTitleColor(UIColor.systemRed, for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "list.bullet.rectangle.portrait"), for: .normal)
-        button.isUserInteractionEnabled = true
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        let config = UIImage.SymbolConfiguration(textStyle: .title1)
+        button.setImage(UIImage(systemName: "list.bullet.rectangle.portrait", withConfiguration: config), for: .normal)
         button.addTarget(self, action: #selector(showMenu), for: .touchUpInside)
         return button
     }()
@@ -68,7 +82,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     private lazy var clipboardButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setImage(UIImage(systemName: "doc.on.clipboard"), for: .normal)
+        button.layer.borderColor = UIColor.systemBlue.cgColor
+        button.layer.borderWidth = 1
+        button.layer.cornerRadius = 5
+        let config = UIImage.SymbolConfiguration(textStyle: .title1)
+        button.setImage(UIImage(systemName: "doc.on.clipboard", withConfiguration: config), for: .normal)
         button.isUserInteractionEnabled = true
         button.addTarget(self, action: #selector(importFromClipboard), for: .touchUpInside)
         return button
@@ -93,6 +111,24 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         return scrollView
     }()
     
+    private lazy var buttonsBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .black
+        view.alpha = 0.5
+        view.isUserInteractionEnabled = false
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private lazy var setEditingIndicator: UIView = {
+        let view = UIView()
+        view.backgroundColor = .red
+        view.layer.cornerRadius = 5
+        view.frame = CGRect(origin: CGPoint(x: 20, y: 50), size: CGSize(width: 10, height: 10))
+        view.isHidden = isInRegularPickingMode
+        return view
+    }()
+    
     //MARK: - Views setup and layout
     private func setupViews() {
         view.backgroundColor = .lightGray
@@ -109,7 +145,9 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         imageScrollView.addGestureRecognizer(doubleTapRecognizer)
         view.addSubview(imageScrollView)
         imageScrollView.addSubview(mainImage)
+        view.addSubview(buttonsBackgroundView)
         view.addSubview(bottomButtonsStackView)
+        view.addSubview(setEditingIndicator)
     }
     private func setupLayout() {
         let constraints: [NSLayoutConstraint] = [
@@ -123,7 +161,7 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
             mainImage.leadingAnchor.constraint(equalTo: imageScrollView.leadingAnchor),
             
             bottomButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
+            bottomButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 10),
             
             cameraButton.heightAnchor.constraint(equalToConstant: 50),
             cameraButton.widthAnchor.constraint(equalToConstant: 50),
@@ -136,6 +174,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
             
             menuButton.heightAnchor.constraint(equalToConstant: 50),
             menuButton.widthAnchor.constraint(equalToConstant: 50),
+            
+            buttonsBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            buttonsBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            buttonsBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            buttonsBackgroundView.topAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor , constant: -14)
         ]
         NSLayoutConstraint.activate(constraints)
     }
@@ -148,6 +191,7 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        setEditingIndicator.isHidden = isInRegularPickingMode //change is to fire at the right time!
         centerImageOnZoom()
     }
     
