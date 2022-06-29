@@ -15,7 +15,11 @@ enum OperatingMode: Equatable {
 
 struct ColorManipulator {
     
-    static var operatingMode: OperatingMode = .regularPicking
+    static var operatingMode: OperatingMode = .regularPicking {
+        didSet {
+            NotificationCenter.default.post(name: Notification.Name("ColorPicker.StateChange"), object: nil)
+        }
+    }
     
     var savedColors: [Color] {
         get {

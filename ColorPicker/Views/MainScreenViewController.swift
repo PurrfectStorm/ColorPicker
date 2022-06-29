@@ -17,8 +17,6 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     
     private var colorPreview = ColorPreview()
     
-    private var isInRegularPickingMode: Bool { ColorManipulator.operatingMode == .regularPicking }
-    
     private var imageToShow: UIImage? {
         get {
             return mainImage.image
@@ -125,7 +123,7 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         view.backgroundColor = .red
         view.layer.cornerRadius = 5
         view.frame = CGRect(origin: CGPoint(x: 20, y: 50), size: CGSize(width: 10, height: 10))
-        view.isHidden = isInRegularPickingMode
+        view.isHidden = true
         return view
     }()
     
@@ -187,11 +185,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         super.viewDidLoad()
         setupViews()
         setupLayout()
+        addObserver()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        setEditingIndicator.isHidden = isInRegularPickingMode //change is to fire at the right time!
         centerImageOnZoom()
     }
     
@@ -213,6 +211,14 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         let offsetX = max((imageScrollView.bounds.width - imageScrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((imageScrollView.bounds.height - imageScrollView.contentSize.height) * 0.5, 0)
         imageScrollView.contentInset = UIEdgeInsets(top: offsetY, left: offsetX, bottom: 0, right: 0)
+    }
+    //handling set editing indicator update in real time
+    private func addObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(trackObserver), name: NSNotification.Name("ColorPicker.StateChange"), object: nil)
+    }
+    
+    @objc private func trackObserver() {
+        setEditingIndicator.isHidden = ColorManipulator.operatingMode == .regularPicking
     }
 
     //MARK: - User intents
@@ -358,5 +364,9 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         centerImageOnZoom()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
