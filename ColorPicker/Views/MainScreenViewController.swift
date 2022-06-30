@@ -120,9 +120,9 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
     
     private lazy var setEditingIndicator: UIView = {
         let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .red
         view.layer.cornerRadius = 5
-        view.frame = CGRect(origin: CGPoint(x: 20, y: 50), size: CGSize(width: 10, height: 10))
         view.isHidden = true
         return view
     }()
@@ -176,7 +176,12 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
             buttonsBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             buttonsBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonsBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonsBackgroundView.topAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor , constant: -14)
+            buttonsBackgroundView.topAnchor.constraint(equalTo: bottomButtonsStackView.topAnchor , constant: -14),
+            
+            setEditingIndicator.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            setEditingIndicator.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 10),
+            setEditingIndicator.widthAnchor.constraint(equalToConstant: 10),
+            setEditingIndicator.heightAnchor.constraint(equalToConstant: 10),
         ]
         NSLayoutConstraint.activate(constraints)
     }
@@ -302,8 +307,8 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         NSLayoutConstraint.activate([
             colorPreview.topAnchor.constraint(equalTo: view.topAnchor, constant: pointY),
             colorPreview.leftAnchor.constraint(equalTo: view.leftAnchor, constant: pointX),
-            colorPreview.heightAnchor.constraint(equalToConstant: 80),
-            colorPreview.widthAnchor.constraint(equalToConstant: 80)
+            colorPreview.heightAnchor.constraint(equalToConstant: 60),
+            colorPreview.widthAnchor.constraint(equalToConstant: 60)
         ])
     }
     

@@ -32,7 +32,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
         return tableView
     }()
     
-    private func getSetSource() -> String {
+    private func getSourceFilename() -> String {
         //give a unique id to it
         let id = UUID().uuidString
         //tell storage service to cache it
@@ -48,7 +48,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
                                                                          handler: { [weak self] in
             if ColorManipulator.operatingMode == .regularPicking {
                 //create an empty color set
-                self?.manipulator.saveColorSet(set: ColorSet(title: "New set", colors: [], source: self?.getSetSource() ?? "none", dateCreated: Date()))
+                self?.manipulator.saveColorSet(set: ColorSet(title: "New set " + String((self?.manipulator.savedColorSets.count)! + 1), colors: [], source: self?.getSourceFilename() ?? "none", dateCreated: Date()))
                 //tell manipulator we are in set adding mode now
                 ColorManipulator.operatingMode = .setEditing(setIndex: (self?.manipulator.savedColorSets.count)! - 1)
                 self?.dismiss(animated: true)

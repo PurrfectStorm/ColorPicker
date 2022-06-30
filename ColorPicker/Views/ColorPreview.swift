@@ -16,13 +16,16 @@ final class ColorPreview: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.layer.masksToBounds = true
         view.layer.cornerRadius = 10
+        view.layer.borderColor = UIColor.systemBlue.cgColor
+        view.layer.borderWidth = 1
         return view
     }()
     
     lazy var icon: UIImageView = {
         let container = UIImageView()
         container.translatesAutoresizingMaskIntoConstraints = false
-        let image = (ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.circle") : UIImage(systemName: "pencil.tip.crop.circle.badge.plus"))
+        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 50, weight: .thin), scale: UIImage.SymbolScale(rawValue: 1)!)
+        let image = (ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.circle", withConfiguration: config) : UIImage(systemName: "plus.viewfinder", withConfiguration: config))
         container.image = image
         container.alpha = 0.5
         return container
@@ -56,15 +59,13 @@ final class ColorPreview: UIView {
     
     private func setupLayout(){
         NSLayoutConstraint.activate([
-            preview.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            preview.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            preview.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            preview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            preview.topAnchor.constraint(equalTo: topAnchor),
+            preview.leadingAnchor.constraint(equalTo: leadingAnchor),
+            preview.trailingAnchor.constraint(equalTo: trailingAnchor),
+            preview.bottomAnchor.constraint(equalTo: bottomAnchor),
             
             icon.centerXAnchor.constraint(equalTo: centerXAnchor),
             icon.centerYAnchor.constraint(equalTo: centerYAnchor),
-            icon.widthAnchor.constraint(equalTo: widthAnchor, constant: -50),
-            icon.heightAnchor.constraint(equalTo: heightAnchor, constant: -50),
         ])
     }
     

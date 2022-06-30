@@ -39,7 +39,7 @@ final class SavedColorSetCell: UITableViewCell {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         let config = UIImage.SymbolConfiguration(textStyle: .title1)
-        button.setImage(UIImage(systemName: "plus", withConfiguration: config), for: .normal)
+        button.setImage(UIImage(systemName: "plus.circle", withConfiguration: config), for: .normal)
         button.isUserInteractionEnabled = true
         button.addTarget(nil, action: #selector(continueSetEditing), for: .touchUpInside)
         return button
