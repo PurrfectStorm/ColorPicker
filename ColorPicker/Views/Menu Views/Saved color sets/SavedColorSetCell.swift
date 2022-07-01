@@ -14,6 +14,8 @@ final class SavedColorSetCell: UITableViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
+        label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
     
@@ -68,6 +70,7 @@ final class SavedColorSetCell: UITableViewCell {
         NSLayoutConstraint.activate([
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            titleLabel.widthAnchor.constraint(equalToConstant: contentView.frame.size.width/2),
             
             previewsStackView.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -5),
             previewsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -77,7 +80,7 @@ final class SavedColorSetCell: UITableViewCell {
             dateLabel.widthAnchor.constraint(equalToConstant: 150),
             
             editButton.trailingAnchor.constraint(equalTo: previewsStackView.trailingAnchor, constant: -5),
-            editButton.topAnchor.constraint(equalTo: previewsStackView.topAnchor, constant: 5),
+            editButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             editButton.widthAnchor.constraint(equalToConstant: 30),
             editButton.heightAnchor.constraint(equalToConstant: 30),
         ])

@@ -68,7 +68,7 @@ extension MainScreenViewController: PHPickerViewControllerDelegate {
         if let result = results.first, !results.isEmpty {
             result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] reading, error in
                 guard let image = reading as? UIImage, error == nil else {return}
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [weak self] in
                     switch image.imageOrientation.rawValue {
                     case 3: // rotate img 90 clockwise
                         self?.showImage(imageData: (image.rotateImage()?.pngData())!)

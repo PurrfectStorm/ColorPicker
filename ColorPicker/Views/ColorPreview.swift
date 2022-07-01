@@ -11,6 +11,8 @@ final class ColorPreview: UIView {
     
     var isOnScreen = false
     
+    var tapHandler:(()->Void)?
+    
     lazy var preview: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -24,7 +26,7 @@ final class ColorPreview: UIView {
     lazy var icon: UIImageView = {
         let container = UIImageView()
         container.translatesAutoresizingMaskIntoConstraints = false
-        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 50, weight: .thin), scale: UIImage.SymbolScale(rawValue: 1)!)
+        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 50, weight: .thin), scale: UIImage.SymbolScale.small)
         let image = (ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.circle", withConfiguration: config) : UIImage(systemName: "plus.viewfinder", withConfiguration: config))
         container.image = image
         container.alpha = 0.5
@@ -70,13 +72,7 @@ final class ColorPreview: UIView {
     }
     
     @objc private func colorPrevivewTapped() {
-        var parentViewController: UIViewController? {
-            let s = sequence(first: self) { $0.next }
-            return s.compactMap { $0 as? UIViewController }.first
-        }
-        if let hostVC = parentViewController as? MainScreenViewController {
-            hostVC.colorPrevivewTapped()
-        }
+        tapHandler!()
     }
     
     override class var requiresConstraintBasedLayout: Bool {

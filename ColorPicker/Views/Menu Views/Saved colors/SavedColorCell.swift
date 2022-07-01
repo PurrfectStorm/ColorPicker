@@ -23,6 +23,8 @@ final class SavedColorCell: UITableViewCell {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
+        label.lineBreakMode = .byTruncatingMiddle
         return label
     }()
     
@@ -63,6 +65,7 @@ final class SavedColorCell: UITableViewCell {
         NSLayoutConstraint.activate([
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            titleLabel.widthAnchor.constraint(equalToConstant: contentView.frame.size.width/2),
             
             preview.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             preview.trailingAnchor.constraint(equalTo: hexDescription.leadingAnchor, constant: -5),

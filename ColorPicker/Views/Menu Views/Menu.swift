@@ -75,6 +75,10 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
             ColorManipulator.operatingMode = .regularPicking
             self?.manipulator.deleteAllData()
         })]))
+        
+        menuModel.append(MenuSection(title: "", items: [MenuItem(title: "About", handler: { [weak self] in
+            self?.navigationController?.pushViewController(AboutViewController(), animated: true)
+        })]))
     }
     
     override func viewDidLoad() {

@@ -265,11 +265,13 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         let newPosition = calculateAdjustedPosition(originX: xPosition, originY: yPosition)
         if !colorPreview.isOnScreen {
             colorPreview = ColorPreview(color: colorToShow!)
+            colorPreview.tapHandler = colorPrevivewTapped
             presentColorPreview(pointX: newPosition.x, pointY: newPosition.y)
         } else {
             colorPreview.isOnScreen = false
             colorPreview.removeFromSuperview()
             colorPreview = ColorPreview(color: colorToShow!)
+            colorPreview.tapHandler = colorPrevivewTapped
             presentColorPreview(pointX: newPosition.x, pointY: newPosition.y)
         }
     }
