@@ -16,7 +16,6 @@
 		EC13F4852857525D009ADDFC /* SavedColorSets.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC13F4842857525D009ADDFC /* SavedColorSets.swift */; };
 		EC13F48728575351009ADDFC /* SavedColorSetCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC13F48628575351009ADDFC /* SavedColorSetCell.swift */; };
 		EC1AA9D32794EFEF001C3BBE /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1AA9D22794EFEF001C3BBE /* Extensions.swift */; };
-		EC1B8A55286F85DC002E7320 /* About.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC1B8A54286F85DC002E7320 /* About.swift */; };
 		EC1B8A57286F94EF002E7320 /* hehe.jpg in Resources */ = {isa = PBXBuildFile; fileRef = EC1B8A56286F94EF002E7320 /* hehe.jpg */; };
 		EC53EDE02867BB4300698A75 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC53EDDF2867BB4300698A75 /* StorageManager.swift */; };
 		EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC569BF4277B9B5600874753 /*  ImageProvider.swift */; };
@@ -28,6 +27,7 @@
 		ECC6207327BEF91C0087F595 /* ColorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECC6207227BEF91C0087F595 /* ColorModel.swift */; };
 		ECCD795F27C0269A0018A7DC /* ColorManipulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECCD795E27C0269A0018A7DC /* ColorManipulator.swift */; };
 		ECD334C227C1705A00C5E86E /* Menu.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD334C127C1705A00C5E86E /* Menu.swift */; };
+		ECDCB31B286FAC7F00C19A90 /* AboutScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECDCB31A286FAC7F00C19A90 /* AboutScreen.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +42,6 @@
 		EC13F4842857525D009ADDFC /* SavedColorSets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColorSets.swift; sourceTree = "<group>"; };
 		EC13F48628575351009ADDFC /* SavedColorSetCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedColorSetCell.swift; sourceTree = "<group>"; };
 		EC1AA9D22794EFEF001C3BBE /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		EC1B8A54286F85DC002E7320 /* About.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = About.swift; path = ../../../../About.swift; sourceTree = "<group>"; };
 		EC1B8A56286F94EF002E7320 /* hehe.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = hehe.jpg; sourceTree = "<group>"; };
 		EC53EDDF2867BB4300698A75 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		EC569BF4277B9B5600874753 /*  ImageProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " ImageProvider.swift"; sourceTree = "<group>"; };
@@ -54,6 +53,7 @@
 		ECC6207227BEF91C0087F595 /* ColorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorModel.swift; sourceTree = "<group>"; };
 		ECCD795E27C0269A0018A7DC /* ColorManipulator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorManipulator.swift; sourceTree = "<group>"; };
 		ECD334C127C1705A00C5E86E /* Menu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Menu.swift; sourceTree = "<group>"; };
+		ECDCB31A286FAC7F00C19A90 /* AboutScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,7 +126,7 @@
 				ECD334C127C1705A00C5E86E /* Menu.swift */,
 				ECEFD9AF285804A500A74033 /* Saved colors */,
 				ECEFD9B0285804C500A74033 /* Saved color sets */,
-				EC1B8A54286F85DC002E7320 /* About.swift */,
+				ECDCB31A286FAC7F00C19A90 /* AboutScreen.swift */,
 			);
 			path = "Menu Views";
 			sourceTree = "<group>";
@@ -242,10 +242,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				EC13F4852857525D009ADDFC /* SavedColorSets.swift in Sources */,
-				EC1B8A55286F85DC002E7320 /* About.swift in Sources */,
 				EC1AA9D32794EFEF001C3BBE /* Extensions.swift in Sources */,
 				ECC4945927C2A4B900C1DC55 /* SavedColorCell.swift in Sources */,
 				ECC6207327BEF91C0087F595 /* ColorModel.swift in Sources */,
+				ECDCB31B286FAC7F00C19A90 /* AboutScreen.swift in Sources */,
 				EC08E6FF276BD9E1007E32D4 /* MainScreenViewController.swift in Sources */,
 				EC6FBF6C27B989A7009E6055 /* ColorPreview.swift in Sources */,
 				EC569BF5277B9B5600874753 /*  ImageProvider.swift in Sources */,
