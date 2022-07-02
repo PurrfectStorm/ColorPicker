@@ -9,6 +9,14 @@ import UIKit
 
 final class AboutViewController: UIViewController {
     
+    private var portraitConstraints: [NSLayoutConstraint]?
+    
+    private var landscapeConstraints: [NSLayoutConstraint]?
+ 
+    private var isPortrait: Bool {
+        UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isPortrait ?? true
+    }
+    
     private lazy var hehe: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -101,36 +109,52 @@ final class AboutViewController: UIViewController {
     
     private func setupLayout() {
         
-        let constraints = [
-            hehe.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            hehe.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20),
-            hehe.widthAnchor.constraint(equalToConstant: 250),
-            hehe.heightAnchor.constraint(equalToConstant: 250),
-            
-            message.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            message.widthAnchor.constraint(equalToConstant: (view.frame.width * 0.7)),
-            message.topAnchor.constraint(equalTo: hehe.bottomAnchor, constant: 16),
-            
-            buttonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            buttonsStackView.widthAnchor.constraint(equalToConstant: 150),
-            buttonsStackView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
-
-            tgButton.heightAnchor.constraint(equalToConstant: 30),
-            tgButton.widthAnchor.constraint(equalToConstant: 100),
-            
-            ghButton.heightAnchor.constraint(equalToConstant: 30),
-            ghButton.widthAnchor.constraint(equalToConstant: 100),
-            
-            igButton.heightAnchor.constraint(equalToConstant: 30),
-            igButton.widthAnchor.constraint(equalToConstant: 100),
-            
-            dismissButton.heightAnchor.constraint(equalToConstant: 30),
-            dismissButton.widthAnchor.constraint(equalToConstant: 100),
-            
+        landscapeConstraints = [
+            hehe.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            hehe.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
+            message.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            message.leadingAnchor.constraint(equalTo: hehe.trailingAnchor, constant: 16),
+            buttonsStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            buttonsStackView.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
         ]
-        NSLayoutConstraint.activate(constraints)
+        
+        portraitConstraints = [
+            hehe.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            hehe.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor),
+            message.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            message.topAnchor.constraint(equalTo: hehe.bottomAnchor, constant: 34),
+            buttonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            buttonsStackView.bottomAnchor.constraint(equalTo: view.layoutMarginsGuide.bottomAnchor),
+        ]
+        
+        let constants = [
+        hehe.widthAnchor.constraint(equalToConstant: 250),
+        hehe.heightAnchor.constraint(equalToConstant: 250),
+        message.widthAnchor.constraint(equalToConstant: 300),
+        buttonsStackView.widthAnchor.constraint(equalToConstant: 150),
+        tgButton.heightAnchor.constraint(equalToConstant: 30),
+        tgButton.widthAnchor.constraint(equalToConstant: 100),
+        ghButton.heightAnchor.constraint(equalToConstant: 30),
+        ghButton.widthAnchor.constraint(equalToConstant: 100),
+        igButton.heightAnchor.constraint(equalToConstant: 30),
+        igButton.widthAnchor.constraint(equalToConstant: 100),
+        dismissButton.heightAnchor.constraint(equalToConstant: 30),
+        dismissButton.widthAnchor.constraint(equalToConstant: 100),
+        ]
+        NSLayoutConstraint.activate(constants)
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if isPortrait {
+            NSLayoutConstraint.deactivate(landscapeConstraints!)
+            NSLayoutConstraint.activate(portraitConstraints!)
+        } else {
+            NSLayoutConstraint.deactivate(portraitConstraints!)
+            NSLayoutConstraint.activate(landscapeConstraints!)
+        }
+    }
+
     @objc private func dismissController() {
         self.dismiss(animated: true)
     }
