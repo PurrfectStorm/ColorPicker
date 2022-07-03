@@ -13,6 +13,7 @@ fileprivate struct MenuSection {
 }
 
 fileprivate struct MenuItem {
+    let icon: UIImage?
     let title: String
     let handler: (() -> Void)
 }
@@ -20,7 +21,7 @@ fileprivate struct MenuItem {
 //MARK: - root menu view controller
 final class MenuViewController : UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var imageToSave: UIImage?
+    var pictureReceiver: (() -> UIImage)?
     
     private var manipulator = ColorManipulator()
     
@@ -36,15 +37,15 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
         //give a unique id to it
         let id = UUID().uuidString
         //tell storage service to cache it
-        StorageManager.shared.cachePhoto(data: imageToSave?.pngData() ?? Data(), name: id)
+        StorageManager.shared.cachePhoto(data: pictureReceiver!().pngData() ?? Data(), name: id)
         return id
     }
     
     private func populateModel() {
-        var setCreationDescription: String {
-            return (ColorManipulator.operatingMode == .regularPicking ? "New color set from current photo" : "Stop adding colors to current set")
-        }
-        menuModel.append(MenuSection(title: "Creation", items: [MenuItem(title: setCreationDescription,
+        
+        var setCreationDescription: String {(ColorManipulator.operatingMode == .regularPicking ? "New color set from current photo" : "Stop adding colors to current set")}
+        var setCreationIcon: UIImage? {(ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.square")?.withTintColor(.black, renderingMode: .alwaysOriginal) : UIImage(systemName: "xmark.square")?.withTintColor(.black, renderingMode: .alwaysOriginal))}
+        menuModel.append(MenuSection(title: "Creation", items: [MenuItem(icon: setCreationIcon, title: setCreationDescription,
                                                                          handler: { [weak self] in
             if ColorManipulator.operatingMode == .regularPicking {
                 //create an empty color set
@@ -61,22 +62,24 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
             }
         })]))
         
-        menuModel.append(MenuSection(title: "Color operations", items: [MenuItem(title: "Colors", handler: {  [weak self] in
+        menuModel.append(MenuSection(title: "Color operations", items: [MenuItem(icon: nil, title: "Colors", handler: {  [weak self] in
             ColorManipulator.operatingMode = .regularPicking
             self?.navigationController?.pushViewController(ColorsViewController(), animated: true)
         }),
-                                                                        MenuItem(title: "Sets", handler: { [weak self] in
+                                                                        MenuItem(icon: nil, title: "Sets", handler: { [weak self] in
             ColorManipulator.operatingMode = .regularPicking
             self?.navigationController?.pushViewController(ColorSetsViewController(), animated: true) })
                                                                        ])
         )
         
-        menuModel.append(MenuSection(title: "Data management", items: [MenuItem(title: "Delete all saved data", handler: { [weak self] in
+        let deleteIcon = UIImage(systemName: "xmark.bin")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
+        menuModel.append(MenuSection(title: "Data management", items: [MenuItem(icon: deleteIcon, title: "Delete all saved data", handler: { [weak self] in
             ColorManipulator.operatingMode = .regularPicking
             self?.manipulator.deleteAllData()
         })]))
         
-        menuModel.append(MenuSection(title: "", items: [MenuItem(title: "About", handler: { [weak self] in
+        let aboutIcon = UIImage(systemName: "questionmark.circle")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        menuModel.append(MenuSection(title: "", items: [MenuItem(icon: aboutIcon, title: "About", handler: { [weak self] in
             self?.navigationController?.pushViewController(AboutViewController(), animated: true)
         })]))
     }
@@ -112,6 +115,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = UITableViewCell()
+        cell.imageView?.image = menuModel[indexPath.section].items[indexPath.row].icon
         cell.textLabel?.text = menuModel[indexPath.section].items[indexPath.row].title
         switch indexPath.section{
         case 1: cell.accessoryType = .disclosureIndicator

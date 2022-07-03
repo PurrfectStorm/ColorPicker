@@ -280,10 +280,11 @@ final class MainScreenViewController: UIViewController, UIScrollViewDelegate, CP
         let menuVC = MenuViewController()
         menuVC.title = "Menu"
         let navVC = UINavigationController(rootViewController: menuVC)
-        removeColorPreview()
-        present(navVC,animated: true) { [weak self] in
-            menuVC.imageToSave = self?.mainImage.image //ugly but working
+        menuVC.pictureReceiver = { [weak self] in
+            return self?.mainImage.image ?? UIImage()
         }
+        removeColorPreview()
+        present(navVC,animated: true)
     }
     //checking input coordinates to prevent color preview appearing offscreen
     private func calculateAdjustedPosition(originX: CGFloat, originY: CGFloat) -> (x:CGFloat, y:CGFloat){
