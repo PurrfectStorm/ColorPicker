@@ -38,7 +38,7 @@ final class SavedColorCell: UITableViewCell {
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 14)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textAlignment = .right
         return label
@@ -65,16 +65,16 @@ final class SavedColorCell: UITableViewCell {
         NSLayoutConstraint.activate([
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            titleLabel.widthAnchor.constraint(equalToConstant: contentView.frame.size.width/2),
+            titleLabel.widthAnchor.constraint(equalToConstant: contentView.frame.size.width/2.4),
             
             preview.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             preview.trailingAnchor.constraint(equalTo: hexDescription.leadingAnchor, constant: -5),
-            preview.widthAnchor.constraint(equalToConstant: 40),
+            preview.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: -5),
             preview.heightAnchor.constraint(equalToConstant: 40),
             
             dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-            dateLabel.widthAnchor.constraint(equalToConstant: 150),
+            dateLabel.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: -5),
             
             hexDescription.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5),
             hexDescription.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
@@ -93,7 +93,7 @@ final class SavedColorCell: UITableViewCell {
         dateLabel.text = "Taken \(formatter.string(from: color.dateTaken))"
         titleLabel.text = color.title
         if let description = UIColor.convertToHex(color: colorToShow) {
-            hexDescription.text = "Hex value #\(description)"
+            hexDescription.text = "Hex code #\(description)"
         }
     }
 }

@@ -78,7 +78,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
             self?.manipulator.deleteAllData()
         })]))
         
-        let aboutIcon = UIImage(systemName: "questionmark.circle")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        let aboutIcon = UIImage(systemName: "questionmark.square")?.withTintColor(.black, renderingMode: .alwaysOriginal)
         menuModel.append(MenuSection(title: "", items: [MenuItem(icon: aboutIcon, title: "About", handler: { [weak self] in
             self?.navigationController?.pushViewController(AboutViewController(), animated: true)
         })]))

@@ -26,10 +26,9 @@ final class ColorPreview: UIView {
     lazy var icon: UIImageView = {
         let container = UIImageView()
         container.translatesAutoresizingMaskIntoConstraints = false
-        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 50, weight: .thin), scale: UIImage.SymbolScale.small)
+        let config = UIImage.SymbolConfiguration(font: UIFont.systemFont(ofSize: 50, weight: .ultraLight), scale: UIImage.SymbolScale.small)
         let image = (ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.circle", withConfiguration: config) : UIImage(systemName: "plus.viewfinder", withConfiguration: config))
         container.image = image
-        container.alpha = 0.5
         return container
     }()
     

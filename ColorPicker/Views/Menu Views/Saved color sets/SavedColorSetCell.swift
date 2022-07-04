@@ -31,9 +31,10 @@ final class SavedColorSetCell: UITableViewCell {
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
+        label.numberOfLines = 2
         label.font = UIFont.systemFont(ofSize: 12)
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textAlignment = .right
+        label.textAlignment = .center
         return label
     }()
     
@@ -75,9 +76,9 @@ final class SavedColorSetCell: UITableViewCell {
             previewsStackView.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -5),
             previewsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             
-            dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5),
+            dateLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -5),
-            dateLabel.widthAnchor.constraint(equalToConstant: 150),
+            dateLabel.widthAnchor.constraint(equalToConstant: 120),
             
             editButton.trailingAnchor.constraint(equalTo: previewsStackView.trailingAnchor, constant: -5),
             editButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -107,7 +108,7 @@ final class SavedColorSetCell: UITableViewCell {
         }
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d, h:mm a"
-        dateLabel.text = "Taken \(formatter.string(from: cSet.dateCreated))"
+        dateLabel.text = "Taken\n \(formatter.string(from: cSet.dateCreated))"
         titleLabel.text = cSet.title
     }
     
