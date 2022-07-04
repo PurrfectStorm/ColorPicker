@@ -30,6 +30,7 @@ final class ImageProvider {
                 let image = pasteboard.images?.first
                 presenter?.showNotification(text: "Pasted item from clipboard", mode: .regular)
                 presenter?.showImage(imageData: (image?.pngData()!)!)
+                return
             } else if pasteboard.hasStrings {
                 if let possibleLink = pasteboard.strings?.first {
                     if let possibleURL = URL(string: possibleLink) {
@@ -37,10 +38,15 @@ final class ImageProvider {
                             DispatchQueue.main.async { [weak self] in
                                 guard let data = try? Data(contentsOf: possibleURL) else {return}
                                 if let testImage = UIImage(data: data) {
-                                    self?.presenter?.showNotification(text: "Pasted item from URL", mode: .regular)
                                     self?.presenter?.showImage(imageData: testImage.pngData()!)
+                                    self?.presenter?.showNotification(text: "Pasted item from URL", mode: .regular)
+                                } else {
+                                    self?.presenter?.showNotification(text: "Invalid image URL", mode: .error)
                                 }
                             }
+                        } else {
+                            self.presenter?.showNotification(text: "No Images", mode: .error)
+                            return
                         }
                     }
                 }
@@ -51,4 +57,4 @@ final class ImageProvider {
             presenter?.showImage(imageData: imageData)
         }
     }
-} 
+}
