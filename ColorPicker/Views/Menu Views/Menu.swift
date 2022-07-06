@@ -33,6 +33,14 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
         return tableView
     }()
     
+    private var cellImageColor: UIColor {
+        switch traitCollection.userInterfaceStyle {
+        case .dark: return UIColor.white
+        case .light: return UIColor.black
+        default: return UIColor.systemBlue
+        }
+    }
+    
     private func getSourceFilename() -> String {
         //give a unique id to it
         let id = UUID().uuidString
@@ -44,7 +52,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
     private func populateModel() {
         
         var setCreationDescription: String {(ColorManipulator.operatingMode == .regularPicking ? "New color set from current photo" : "Stop adding colors to current set")}
-        var setCreationIcon: UIImage? {(ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.square")?.withTintColor(.black, renderingMode: .alwaysOriginal) : UIImage(systemName: "xmark.square")?.withTintColor(.black, renderingMode: .alwaysOriginal))}
+        var setCreationIcon: UIImage? {(ColorManipulator.operatingMode == .regularPicking ? UIImage(systemName: "plus.square")?.withTintColor(cellImageColor, renderingMode: .alwaysOriginal) : UIImage(systemName: "xmark.square")?.withTintColor(cellImageColor, renderingMode: .alwaysOriginal))}
         menuModel.append(MenuSection(title: "Creation", items: [MenuItem(icon: setCreationIcon, title: setCreationDescription,
                                                                          handler: { [weak self] in
             if ColorManipulator.operatingMode == .regularPicking {
@@ -78,7 +86,7 @@ final class MenuViewController : UIViewController, UITableViewDelegate, UITableV
             self?.manipulator.deleteAllData()
         })]))
         
-        let aboutIcon = UIImage(systemName: "questionmark.square")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        let aboutIcon = UIImage(systemName: "questionmark.square")?.withTintColor(cellImageColor, renderingMode: .alwaysOriginal)
         menuModel.append(MenuSection(title: "", items: [MenuItem(icon: aboutIcon, title: "About", handler: { [weak self] in
             self?.navigationController?.pushViewController(AboutViewController(), animated: true)
         })]))
